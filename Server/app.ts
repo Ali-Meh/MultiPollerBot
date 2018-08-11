@@ -4,5 +4,9 @@ import telegram from 'node-telegram-bot-api';
 const Tcfg=require('./../Config/Tcfg.json');
 
 
-let tel=new telegram(Tcfg.botApi)
+let bot=new telegram(Tcfg.botApi);
+
+
+
+
 
