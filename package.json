@@ -1,0 +1,29 @@
+{
+  "name": "nodechatappts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node Server/app.ts",
+    "test": "mocha -r ts-node/register **/*.test.ts",
+    "wtest": "nodemon -e js,ts,json --exec npm test",
+    "wstart": "nodemon -e js,ts,json --exec npm start",
+    "pstart": "nodemon -e js,ts,json --exec ts-node playground/app.ts"
+  },
+  "author": "Dark Shot",
+  "license": "ISC",
+  "dependencies": {
+    "@types/mongoose": "^5.2.5",
+    "@types/node-telegram-bot-api": "^0.30.1",
+    "mongoose": "^5.2.7",
+    "node-telegram-bot-api": "^0.30.0",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
+  },
+  "devDependencies": {
+    "@types/expect": "^1.20.3",
+    "@types/mocha": "^5.2.5",
+    "expect": "^23.4.0",
+    "mocha": "^5.2.0"
+  }
+}
