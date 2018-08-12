@@ -1,56 +1,64 @@
-
-interface infPoll{
-    ownerId:number,
-	questions:infQuestion[],
-	describer:String
-}
-
-interface infQuestion{
-	pollId:String,
-	describer:String,
-	Answers:String[]
-}
-
 export class pollMaker{
+    static queuedPolls=new Array();
+
+    questionsQueue:question[]
+
+    PollDescriber:string;
     ownerId:number;
-    questions:infQuestion[]=new Array();
-    describer:String;
-    static pollesQueue:pollMaker[];
-    pollID?:string;
+    
+    public static userPoll(OnwerID:number,PollDescriber:string):pollMaker{
+        let poll=pollMaker.queuedPolls.filter((poll:pollMaker)=> poll.ownerId===OnwerID);
+        if(poll.length>0){
+            return poll[0];
+        }else{
+            return new pollMaker(PollDescriber,OnwerID);
+        }
+    }
+
+
+    TempQuestion?:question;
     /**
      *
      */
-    constructor(ownerID:number,describer:string) {
-        this.ownerId=ownerID;
-        this.describer=describer;
-        // this.questions.push();
-        pollMaker.pollesQueue.push(this);
+    private constructor(pollDes:string,ownID:number) {
+        this.PollDescriber=pollDes,
+        this.ownerId=ownID
+        this.questionsQueue=new Array();
+        pollMaker.queuedPolls.push(this);
     }
 
-    addQuestion(question:infQuestion){
-        this.questions.push(question);
+    public AddQuestion(des:string){
+        this.TempQuestion=new question(des);
+        this.questionsQueue.push(this.TempQuestion);
     }
 
-    // qustionGenerator():infQuestion{
-    //     question.
-    // }
+    public addAnswers(des:string){
+        if(this.TempQuestion)
+        {
+            this.TempQuestion.addAnswer(des);
+        }
+    }
+
 }
 
-class question implements infQuestion{
-    pollId: String;
+class question implements Iquestion{
     describer: String;
     Answers: String[];
 
     /**
      *
      */
-    constructor(pollId:string,des:string) {
+    constructor(des:string) {
         this.describer=des;
-        this.pollId=pollId;
         this.Answers=new Array();
     }
 
-    addAnswer(answer:string){
-        this.Answers.push(answer);
+    public addAnswer(ans:string){
+        this.Answers.push(ans);
     }
+}
+
+interface Iquestion{
+	describer:String,
+	Answers:String[]
 }

@@ -3,5 +3,6 @@
     "Track_endQuestion":"okey a question added go ahead and end poll setup with /endPoll otherwize go ahead and add more questions",
     "Track_addQuestion":"please provide the question",
     "Track_addAnswer":"please add your distractors on evrey post use /endQuestion to end question",
-    "Track_defualt":"sorry but you havenot needed a poll use /new to generate a poll together!!!"
+    "Track_defualt":"sorry but you havenot needed a poll use /new to generate a poll together!!!",
+    "Track_polldescriber":"provide the polles title"
 }
