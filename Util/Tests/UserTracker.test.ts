@@ -12,36 +12,45 @@ beforeEach(()=>{
     userTrack.push({userid:75756716,trace:Track.new});
 
 })
-class u{
-    static users:UserTrack[];
-}
+
 
 
 describe("userTracker Utililty test...",()=>{
+    describe("with costume list",()=>{
 
-    it("should add new user to the list and give the list back",()=>{
-        // userTrack=new Array();
-        let user={userid:852456852,trace:Track.new}
-        TrackUtil.setState(user.userid,user.trace,userTrack);
-
-        let userReturned=TrackUtil.FindState(user.userid,userTrack);
-        // console.log(JSON.stringify(userReturned,undefined,4));
-        
-        expect(userReturned.trace).toEqual(user.trace);
-    });
+        it("should add new user to the list and give the list back",()=>{
+            // userTrack=new Array();
+            let user={userid:852456852,trace:Track.new}
+            TrackUtil.setState(user.userid,user.trace,userTrack);
     
-    it("should find the user with the specified data",()=>{
-        let userstate=TrackUtil.FindState(23423425,userTrack);
-        expect(userstate.trace).toEqual(Track.addQuestion)
-    });
+            let userReturned=TrackUtil.FindState(user.userid,userTrack);
+            // console.log(JSON.stringify(userReturned,undefined,4));
+            
+            expect(userReturned.trace).toEqual(user.trace);
+        });
+        
+        it("should find the user with the specified data",()=>{
+            let userstate=TrackUtil.FindState(23423425,userTrack);
+            expect(userstate.trace).toEqual(Track.addQuestion)
+        });
+    
+        it("should change the state of existing user",()=>{
+            let userid=35436563;
+            let userstate=TrackUtil.FindState(userid,userTrack);
+            expect(userstate.trace).toEqual(Track.polldescriber);
+            TrackUtil.setState(userid,Track.addAnswer,userTrack);
+            userstate=TrackUtil.FindState(userid,userTrack);
+            expect(userstate.trace).toEqual(Track.addAnswer);
+        })
+    
+    })
 
-    it("should change the state of existing user",()=>{
-        let userid=35436563;
-        let userstate=TrackUtil.FindState(userid,userTrack);
-        expect(userstate.trace).toEqual(Track.polldescriber);
-        TrackUtil.setState(userid,Track.addAnswer,userTrack);
-        userstate=TrackUtil.FindState(userid,userTrack);
-        expect(userstate.trace).toEqual(Track.addAnswer);
+    describe("without any list",()=>{
+        it("should add new user to the list and give the list back");
+        
+        it("should find the user with the specified data");
+    
+        it("should change the state of existing user")
     })
 
 })

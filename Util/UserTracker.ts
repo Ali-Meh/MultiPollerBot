@@ -12,11 +12,14 @@ export interface UserTrack{
 }
 
 export class TrackUtil{
-    static FindState(userID:number,list:UserTrack[]):UserTrack{
+    static usrlst:UserTrack[]=new Array();
+
+
+    static FindState(userID:number,list:UserTrack[]=TrackUtil.usrlst):UserTrack{
         let user = list.filter((user)=>user.userid===userID);
         return user[0];
     }
-    static setState(userID:number,state:Track,list:UserTrack[]):UserTrack{
+    static setState(userID:number,state:Track,list:UserTrack[]=TrackUtil.usrlst):UserTrack{
         let user = this.FindState(userID,list);
         if(user){
             user.trace=state;
