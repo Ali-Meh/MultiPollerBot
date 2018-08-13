@@ -8,13 +8,16 @@ export class pollMaker{
     PollDescriber:string;
     ownerId:number;
     
-    public static userPoll(OnwerID:number,PollDescriber:string):pollMaker{
+    public static userPoll(OnwerID:number,PollDescriber:string):pollMaker|undefined{
         let poll=pollMaker.queuedPolls.filter((poll:pollMaker)=> poll.ownerId===OnwerID);
         if(poll.length>0){
             return poll[0];
-        }else{
+        }else if(PollDescriber!=="."){
             return new pollMaker(PollDescriber,OnwerID);
+        }else{
+            return undefined;
         }
+
     }
 
 
@@ -41,7 +44,7 @@ export class pollMaker{
         }
     }
 
-    async addToDatabase(){//todo: gotta delet the poll from queue and add it to database
+    async addToDatabase(){
         let poll={
             ownerId:this.ownerId,
             questions:this.questionsQueue,
@@ -51,12 +54,12 @@ export class pollMaker{
         let polled=await addPoll(poll);
 
         this.questionsQueue.forEach((Q)=>{
-            // addQuestionToPoll(polled._id,Q);
-            console.log(JSON.stringify(addQuestionToPoll(polled._id,Q),undefined,4));
+            addQuestionToPoll(polled._id,Q);
+
         })
 
+        pollMaker.queuedPolls=pollMaker.queuedPolls.filter((poll)=>poll!==this);
         return polled;
-        //todo remove from the Queue
     }
 
 }

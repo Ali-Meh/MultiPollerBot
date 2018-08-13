@@ -1,8 +1,17 @@
 {
     "new":"please provide a Describtion for your poll",
+
     "Track_endQuestion":"okey a question added go ahead and end poll setup with /endPoll otherwize go ahead and add more questions",
     "Track_addQuestion":"please provide the question",
     "Track_addAnswer":"please add your distractors on evrey post use /endQuestion to end question",
     "Track_defualt":"sorry but you havenot needed a poll use /new to generate a poll together!!!",
-    "Track_polldescriber":"provide the polles title"
+    "Track_polldescriber":"provide the polles title",
+
+    "Error_noPollToEnd":"there is no poll please run /new to start new",
+    "Error_endQuestion_failed":"sorry some thing  went wrong you haven't added answers or aren't in poll setup run /new",
+    "Error_endQuestion_less2":"need to add at least 2 Answers per user please add more then call /endQuestion",
+
+
+
+    "notify_addedTodatabase":"Seccess!!! your poll added to database run /myPolls to see your polls"
 }

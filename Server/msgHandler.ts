@@ -27,6 +27,21 @@ export class botMsgHandler{
 
 
                 if(msg.text.indexOf("/endQuestion")>-1){
+                    poller=pollMaker.userPoll(msg.chat.id,".")
+                    if(!TrackUtil.FindState(msg.chat.id)){//on no user it works
+                        bot.sendMessage(msg.chat.id,lang.Error_endQuestion_failed);
+                        return;
+                    }else if(poller){
+                        if(poller.TempQuestion&&poller.TempQuestion.Answers.length<2)
+                        {
+                            bot.sendMessage(msg.chat.id,lang.Error_endQuestion_less2);
+                            return;
+                        }
+                    }
+                    else if(!poller){
+                        bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd);
+                        return;
+                    }
                     bot.sendMessage(msg.chat.id,lang.Track_endQuestion);
                     TrackUtil.setState(msg.chat.id,Track.addQuestion);
                     bot.sendMessage(msg.chat.id,lang.Track_addQuestion);
@@ -34,40 +49,47 @@ export class botMsgHandler{
                 }
                 if(msg.text.indexOf("/endPoll")>-1){//start saving to data base and clening the poll Queue
                     poller=pollMaker.userPoll(msg.chat.id,".")
-                    // if(!poller||poller.PollDescriber==="."){
-                    //     //fixme need to throw an error to user to use /new
-                    //     return;
-                    // }
-                    bot.sendMessage(msg.chat.id,JSON.stringify(poller,undefined,4));
-                    poller.addToDatabase();
-                    return;
+                    if(poller){
+                        if((poller.PollDescriber===".")||!TrackUtil.FindState(msg.chat.id)){
+                            bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd);
+                            // bot.sendMessage(msg.chat.id,lang.JSON.stringify(v,undefined,4));
+                            return;
+                        }
+                        bot.sendMessage(msg.chat.id,lang.notify_addedTodatabase);
+                        poller.addToDatabase();
+                        return;
+                    }else{
+                        bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd);
+                        return;
+                    }
                 }
     
                 let user=TrackUtil.FindState(msg.chat.id);
                 if(user){
-                    switch (user.trace) {
-                        case Track.polldescriber:
-                            poller=pollMaker.userPoll(msg.chat.id,msg.text);
-                            TrackUtil.setState(msg.chat.id,Track.addQuestion)
-                            // bot.emit("text",msg);
-                            bot.sendMessage(msg.chat.id,lang.Track_addQuestion)
-                            break;
-                        case Track.addQuestion:
-                            bot.sendMessage(msg.chat.id,lang.Track_addAnswer)
-                            poller=pollMaker.userPoll(msg.chat.id,msg.text);
-                            poller.AddQuestion(msg.text);
-                            TrackUtil.setState(msg.chat.id,Track.addAnswer);
-                            break;
-                        case Track.addAnswer:
-                            bot.sendMessage(msg.chat.id,lang.Track_addAnswer)
-                            poller=pollMaker.userPoll(msg.chat.id,msg.text);
-                            poller.addAnswers(msg.text);
-                            // bot.sendMessage(msg.chat.id,lang.Track_addAnswer);
-                            // TrackUtil.setState(msg.chat.id,Track.addAnswer);
-                            break;
-                        default:
-                            bot.sendMessage(msg.chat.id,lang.Track_defualt);
-                            break;
+                    poller=pollMaker.userPoll(msg.chat.id,msg.text);
+
+                    if(poller){
+                        switch (user.trace) {
+                            case Track.polldescriber:
+                                TrackUtil.setState(msg.chat.id,Track.addQuestion)
+                                // bot.emit("text",msg);
+                                bot.sendMessage(msg.chat.id,lang.Track_addQuestion)
+                                break;
+                            case Track.addQuestion:
+                                bot.sendMessage(msg.chat.id,lang.Track_addAnswer)
+                                poller.AddQuestion(msg.text);
+                                TrackUtil.setState(msg.chat.id,Track.addAnswer);
+                                break;
+                            case Track.addAnswer:
+                                bot.sendMessage(msg.chat.id,lang.Track_addAnswer)                           
+                                poller.addAnswers(msg.text);
+                                // bot.sendMessage(msg.chat.id,lang.Track_addAnswer);
+                                // TrackUtil.setState(msg.chat.id,Track.addAnswer);
+                                break;
+                            default:
+                                bot.sendMessage(msg.chat.id,lang.Track_defualt);
+                                break;
+                        }
                     }
                 }
                 
