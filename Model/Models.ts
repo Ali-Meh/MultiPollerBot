@@ -17,6 +17,5 @@ export let Question=new Schema({
 
 export let Poll=new Schema({
 	ownerId:Number,
-	questions:[Question],
 	describer:String
 })

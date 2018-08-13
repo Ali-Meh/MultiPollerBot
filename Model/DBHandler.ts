@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import {User,Question,Poll} from "./Models";
 import DBcfg from "../Config/DBcfg";
 import * as dbinf from "../Util/modelInterfases"
-import * as Exeption from "../Util/Exeptions"
 
 
 mongoose.connect(DBcfg.geturl(),(err)=>{
@@ -16,29 +15,25 @@ mongoose.connect(DBcfg.geturl(),(err)=>{
 
 let Dpoll=mongoose.model<dbinf.infPoll>("poll",Poll);
 let Duser=mongoose.model("UserAnswered",User);
-let Dquestion=mongoose.model("Question",Question);
+let Dquestion=mongoose.model<dbinf.infQuestion>("Question",Question);
 
-export async function addPoll(polle:dbinf.infPoll){
-    let pollee=await Dpoll.findOne({ownerId:polle.ownerId,describer:polle.describer});
-    if(!pollee){
-        pollee=new Dpoll(polle);
-        pollee.save();
-    }
+export async function addPoll(polle:{ownerId:number,describer:string}){
+    let pollee=new Dpoll();
+    pollee.ownerId=polle.ownerId;
+    pollee.describer=polle.describer;
+    pollee.save();
     return pollee;
 }
 
-export async function addQuestionToPoll(PollId:string,qustion:dbinf.infQuestion){
-    // Dpoll.findById(PollId).then((polle)=>{
-    //     if(polle&&polle.questions){
-    //         polle.questions.push(qustion);
-    //     }
-    // })
-
-    let polle=await Dpoll.findById(PollId);
-    if(polle){
-        polle.questions.push(qustion);
-    }else{
-        throw new Exeption.noPollFinded("no poll finded to apend new qustion");
+export function addQuestionToPoll(PollId:string,qustion:{describer:String,Answers:String[]}){
+    let Question=new Dquestion();
+    Question.pollId=PollId;
+    Question.describer=qustion.describer;
+    for(let i=0;i<qustion.Answers.length;i++)
+    {
+        Question.Answers.push(qustion.Answers[i]);
     }
+    Question.save();
+    return Question;
 }
 

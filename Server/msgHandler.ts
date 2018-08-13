@@ -33,8 +33,14 @@ export class botMsgHandler{
                     return;
                 }
                 if(msg.text.indexOf("/endPoll")>-1){//start saving to data base and clening the poll Queue
-                    poller=pollMaker.userPoll(msg.chat.id,"dsf")
+                    poller=pollMaker.userPoll(msg.chat.id,".")
+                    // if(!poller||poller.PollDescriber==="."){
+                    //     //fixme need to throw an error to user to use /new
+                    //     return;
+                    // }
                     bot.sendMessage(msg.chat.id,JSON.stringify(poller,undefined,4));
+                    poller.addToDatabase();
+                    return;
                 }
     
                 let user=TrackUtil.FindState(msg.chat.id);

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 export interface infPoll extends mongoose.Document{
     ownerId:number,
-	questions:[infQuestion],
+	// questions:[infQuestion],
 	describer:String
 }
 

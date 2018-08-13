@@ -1,3 +1,5 @@
+import {addPoll,addQuestionToPoll} from '../Model/DBHandler';
+
 export class pollMaker{
     static queuedPolls=new Array();
 
@@ -37,6 +39,24 @@ export class pollMaker{
         {
             this.TempQuestion.addAnswer(des);
         }
+    }
+
+    async addToDatabase(){//todo: gotta delet the poll from queue and add it to database
+        let poll={
+            ownerId:this.ownerId,
+            questions:this.questionsQueue,
+            describer:this.PollDescriber,
+        }
+
+        let polled=await addPoll(poll);
+
+        this.questionsQueue.forEach((Q)=>{
+            // addQuestionToPoll(polled._id,Q);
+            console.log(JSON.stringify(addQuestionToPoll(polled._id,Q),undefined,4));
+        })
+
+        return polled;
+        //todo remove from the Queue
     }
 
 }
