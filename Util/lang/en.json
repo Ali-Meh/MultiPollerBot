@@ -10,8 +10,10 @@
     "Error_noPollToEnd":"there is no poll please run /new to start new",
     "Error_endQuestion_failed":"sorry some thing  went wrong you haven't added answers or aren't in poll setup run /new",
     "Error_endQuestion_less2":"need to add at least 2 Answers per user please add more then call /endQuestion",
+    "Error_myPollsNotFound":"no poll finded",
 
 
 
-    "notify_addedTodatabase":"Seccess!!! your poll added to database run /myPolls to see your polls"
+    "notify_addedTodatabase":"Seccess!!! your poll added to database run /myPolls to see your polls",
+    "notify_myPollsKeyboardUpdate":"Your Polls are showen below 👇"
 }

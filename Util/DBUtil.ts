@@ -3,20 +3,14 @@ import * as I from'./modelInterfases';
 
 
 
-// export async function findPollsByOwner(userID:number){
-//     let dbPolls:I.infPoll[]=await DBHandler.findUserPolles(userID);
-//     let dbquestions:
-//     let Polls:I.IPoll[];
-
-//     dbPolls.forEach((dbpoll)=>{
-//         Polls.push({PollDescriber:dbpoll.describer,ownerId:dbpoll.ownerId});
-//     })
-// }
-
-export function DBIToI(input:I.infPoll){
-    let Output=new I.Cpoll(input.describer,input.ownerId);
-        // Output.questionsQueue=input.
+export async function findPollsByOwner(userID:number){
+    let dbPolls:I.infPoll[]=await DBHandler.findUserPolles(userID);
+    if(dbPolls.length>0){
+        return dbPolls;
+    }
+    return undefined;
 }
+
 
 export function IToDBI(input:I.IPoll) {
     let Dpoll=DBHandler.Getdpoll();

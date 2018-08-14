@@ -1,8 +1,11 @@
 
 import telegram from 'node-telegram-bot-api';
 const lang=require('../Util/lang/en.json');
-import {pollMaker} from '../Util/pollMaker'
-import {UserTrack,Track, TrackUtil} from '../Util/UserTracker'
+import {pollMaker} from '../Util/pollMaker';
+import * as dbUtil from '../Util/DBUtil';
+import * as uiUtil from '../Util/UIUtility';
+
+import {Track, TrackUtil} from '../Util/UserTracker';
 export class botMsgHandler{
     Tbot:telegram;
     /**
@@ -25,7 +28,15 @@ export class botMsgHandler{
             if(msg.text){
             let poller;
                 if(msg.text.indexOf("/myPolls")>-1){
-                    
+                    dbUtil.findPollsByOwner(msg.chat.id).then((polls)=>{
+                        if(polls){
+                            bot.sendMessage(msg.chat.id,lang.notify_myPollsKeyboardUpdate,uiUtil.MakeMarkUp(polls));
+                            return;
+                        }
+                        bot.sendMessage(msg.chat.id,lang.Error_myPollsNotFound);
+                        return;
+                    })
+
                 }
                 if(msg.text.indexOf("/endQuestion")>-1){
                     poller=pollMaker.userPoll(msg.chat.id,".")
