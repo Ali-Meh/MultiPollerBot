@@ -25,15 +25,30 @@ export async function addPoll(polle:{ownerId:number,describer:string}){
     return pollee;
 }
 
-export function addQuestionToPoll(PollId:string,qustion:{describer:String,Answers:String[]}){
-    let Question=new Dquestion();
-    Question.pollId=PollId;
-    Question.describer=qustion.describer;
-    for(let i=0;i<qustion.Answers.length;i++)
-    {
-        Question.Answers.push(qustion.Answers[i]);
+export async function addQuestionToPoll(PollId:string,qustion:{describer:String,Answers:String[]}){
+    let poll=await Dpoll.findById(PollId)
+    if(poll!=null){
+        let Question=new Dquestion();
+        Question.pollId=PollId;
+        Question.describer=qustion.describer;
+        for(let i=0;i<qustion.Answers.length;i++)
+        {
+            Question.Answers.push(qustion.Answers[i]);
+        }
+        poll.questions.push(Question);
+        poll.save();
+        return Question;
     }
-    Question.save();
-    return Question;
+
 }
 
+export async function findUserPolles(UserID:number){
+    return Dpoll.find({ownerId:UserID})
+}
+
+export function Getdpoll(){
+    return Dpoll;
+}
+export function GetDquestion() {
+    return Dquestion;
+}

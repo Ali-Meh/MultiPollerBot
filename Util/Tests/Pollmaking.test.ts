@@ -9,20 +9,28 @@ describe("poll maker Tests...",()=>{
         let userinfo={userId:12589635,pollDes:"poll des 1",question1:"Q1",
         answers:["A1","A2"],question2:"Q2",answers2:["A2","A3","A4"]};
         let poll=pollMaker.userPoll(userinfo.userId,userinfo.pollDes);
-        poll.AddQuestion(userinfo.question1);
-        userinfo.answers.forEach((answer)=>{
-            poll.addAnswers(answer);
-        })
-        poll.AddQuestion(userinfo.question2);
-        userinfo.answers2.forEach((answer)=>{
-            poll.addAnswers(answer);
-        })
+        if(poll){
+            poll.AddQuestion(userinfo.question1);
+            userinfo.answers.forEach((answer)=>{
+                if(poll){
+                    poll.addAnswers(answer);
+                    }
+            })
+            poll.AddQuestion(userinfo.question2);
+            userinfo.answers2.forEach((answer)=>{
+                if(poll){
+                    poll.addAnswers(answer);
+                    }
+            })
+        }
         let ReturnedPoll=pollMaker.userPoll(userinfo.userId,"noPollYet");
-        expect(ReturnedPoll.ownerId).toEqual(userinfo.userId);
-        expect(ReturnedPoll.PollDescriber).toEqual(userinfo.pollDes);
-        expect(ReturnedPoll.questionsQueue.length).toEqual(2);
-        expect(ReturnedPoll.questionsQueue[0].Answers.length).toEqual(userinfo.answers.length);
-        expect(ReturnedPoll.questionsQueue[1].Answers.length).toEqual(userinfo.answers2.length);
+        if(ReturnedPoll){
+            expect(ReturnedPoll.ownerId).toEqual(userinfo.userId);
+            expect(ReturnedPoll.PollDescriber).toEqual(userinfo.pollDes);
+            expect(ReturnedPoll.questionsQueue.length).toEqual(2);
+            expect(ReturnedPoll.questionsQueue[0].Answers.length).toEqual(userinfo.answers.length);
+            expect(ReturnedPoll.questionsQueue[1].Answers.length).toEqual(userinfo.answers2.length);
+        }
 
 
     });

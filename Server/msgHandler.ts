@@ -24,11 +24,12 @@ export class botMsgHandler{
         bot.on("text",(msg:telegram.Message)=>{
             if(msg.text){
             let poller;
-
-
+                if(msg.text.indexOf("/myPolls")>-1){
+                    
+                }
                 if(msg.text.indexOf("/endQuestion")>-1){
                     poller=pollMaker.userPoll(msg.chat.id,".")
-                    if(!TrackUtil.FindState(msg.chat.id)){//on no user it works
+                    if(!TrackUtil.FindState(msg.chat.id)){
                         bot.sendMessage(msg.chat.id,lang.Error_endQuestion_failed);
                         return;
                     }else if(poller){
@@ -55,7 +56,7 @@ export class botMsgHandler{
                             // bot.sendMessage(msg.chat.id,lang.JSON.stringify(v,undefined,4));
                             return;
                         }
-                        bot.sendMessage(msg.chat.id,lang.notify_addedTodatabase);
+                        bot.sendMessage(msg.chat.id,lang.notify_addedTodatabase);//fixme no option yet runs the get answer track
                         poller.addToDatabase();
                         return;
                     }else{
