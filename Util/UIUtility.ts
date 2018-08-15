@@ -1,4 +1,5 @@
 import * as I from './modelInterfases'
+import telegram from 'node-telegram-bot-api';
 
 export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
     let options:String[]=new Array();
@@ -17,16 +18,24 @@ export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
     return opts;
 }
 
-// export function ShareInlineKeyboard(Id:number){ {//todo add the share keyboard
-    // bot.sendMessage(msg.chat.id, 'Share:', {
-    //     reply_markup: {
-    //         inline_keyboard: [[{
-    //             text: 'Share with your friends',
-    //             switch_inline_query: 'share'
-    //         }]]
-    //     }
-    // })
-// }
+export function MakeInLineMarkUpAnswers(question:I.infQuestion):telegram.InlineKeyboardMarkup{
+    let options:Array<telegram.InlineKeyboardButton>=new Array();
+    for(let i=0;i<question.Answers.length;i++){
+        options.push({text:question.Answers[i].toString(),callback_data:question.pollId+"-"+question._id+"-"+question.Answers[i].toString()});        
+    }
+
+    let opts:telegram.InlineKeyboardMarkup = {
+        inline_keyboard: [options]
+    };
+
+
+    return opts;
+}
+
+
+export function ShareInlineKeyboard(Id:number){ //todo add the share keyboard
+
+}
 
 
 

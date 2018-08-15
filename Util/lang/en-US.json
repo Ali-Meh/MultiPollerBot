@@ -15,5 +15,9 @@
 
 
     "notify_addedTodatabase":"Seccess!!! your poll added to database run /myPolls to see your polls",
-    "notify_myPollsKeyboardUpdate":"Your Polls are showen below 👇"
+    "notify_myPollsKeyboardUpdate":"Your Polls are showen below 👇",
+
+
+
+    "Message_Run_Start":"please use the Buttom below to porticipate in the Poll \n\n\n\n"
 }
