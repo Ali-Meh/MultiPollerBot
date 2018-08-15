@@ -1,6 +1,7 @@
 
 import telegram from 'node-telegram-bot-api';
-const lang=require('../Util/lang/en.json');
+import langSelector from '../Util/lang/langSelector';
+const lang=langSelector();
 import {pollMaker} from '../Util/pollMaker';
 import * as dbUtil from '../Util/DBUtil';
 import * as uiUtil from '../Util/UIUtility';
@@ -31,6 +32,17 @@ export class botMsgHandler{
                     dbUtil.findPollsByOwner(msg.chat.id).then((polls)=>{
                         if(polls){
                             bot.sendMessage(msg.chat.id,lang.notify_myPollsKeyboardUpdate,uiUtil.MakeMarkUp(polls));
+
+    bot.sendMessage(msg.chat.id, 'Share:', {
+        reply_markup: {
+            inline_keyboard: [[{
+                text: 'Share with your friends',
+                switch_inline_query: 'hello',
+                callback_data:"I don't Know"
+            }]]
+        }
+    })
+
                             return;
                         }
                         bot.sendMessage(msg.chat.id,lang.Error_myPollsNotFound);

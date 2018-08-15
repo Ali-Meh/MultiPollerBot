@@ -26,6 +26,13 @@ export function IToDBI(input:I.IPoll) {
         })  
         output.questions.push(temp);
     })
-
     return output;
+}
+
+export function langFinder(){//todo
+    DBHandler
+}
+
+export function langSetter(){//todo
+    
 }

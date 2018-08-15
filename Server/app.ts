@@ -1,5 +1,6 @@
 import telegram from 'node-telegram-bot-api';
 import {botMsgHandler} from './msgHandler'
+import pollingHandler from './PollingHandler';
 
 const Tcfg=require('./../Config/Tcfg.json');
 
@@ -23,7 +24,10 @@ const Tcfg=require('./../Config/Tcfg.json');
 let bot=new telegram(Tcfg.botApi,{polling:true});
 
 
-let msghndl=new botMsgHandler(bot);    
+new pollingHandler(bot);
+
+let msghndl=new botMsgHandler(bot);  
+
 
 
 
