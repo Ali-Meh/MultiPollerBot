@@ -32,7 +32,7 @@ export class pollMaker{
         pollMaker.queuedPolls.push(this);
     }
 
-    public AddQuestion(des:string){//bug doesntt kepp the order right
+    public AddQuestion(des:string){
         this.TempQuestion=new question(des);
         this.questionsQueue.push(this.TempQuestion);
     }
@@ -53,10 +53,10 @@ export class pollMaker{
 
         let polled=await addPoll(poll);
 
-        this.questionsQueue.forEach((Q)=>{
-            addQuestionToPoll(polled._id,Q);
+        for(let i=0;i<this.questionsQueue.length;i++){
+            await addQuestionToPoll(polled._id,this.questionsQueue[i]);
+        }
 
-        })
 
         pollMaker.queuedPolls=pollMaker.queuedPolls.filter((poll)=>poll!==this);
         return polled;
