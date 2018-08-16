@@ -2,12 +2,15 @@ var Schema = require('mongoose').Schema;
 
 
 
-export let User=new Schema({
-	userId:Number,
-	pollId:String,
-	answers:[{questionID:Number,answerId:Number}]
-});
+export let user=new Schema({
+	userIdHash:String,
+	answers:[{questionID:String,answerId:Number}]
+})
 
+export let answer=new Schema({
+	pollId:String,
+	users:[user]
+});
 
 export let Question=new Schema({
 	pollId:String,

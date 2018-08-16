@@ -1,38 +1,54 @@
 import mongoose from 'mongoose';
 
+declare namespace I{
 
 
-export interface infPoll extends mongoose.Document{
-    ownerId:number,
-	questions:[infQuestion],
-	describer:String
-}
-
-export interface infQuestion extends mongoose.Document{
-	pollId:String,
-	describer:String,
-	Answers:[String]
-}
-export class Cpoll implements IPoll{
-	questionsQueue: Iquestion[]=new Array();
-	PollDescriber: String;
-	ownerId: number;
-
-	/**
-	 *
-	 */
-	constructor(PollDescriber: String,ownerId: number) {
-		this.PollDescriber=PollDescriber;
-		this.ownerId=ownerId;
+	interface Iuser{
+		userIdHash:String,
+		answers:[{questionID:String,answerId:Number}]
 	}
-}
-interface Iquestion{
-	describer:String,
-	Answers:String[]
+	interface InfAnswers extends mongoose.Document{
+		pollId:String,
+		users:[InfUser]
+	}
+	interface InfUser extends mongoose.Document{
+		userIdHash:String,
+		answers:[{questionID:String,answerId:Number}]
+	}
+	interface IAnswers{
+		pollId:String,
+		user:Iuser
+	}
+	interface infPoll extends mongoose.Document{
+		ownerId:number,
+		questions:[infQuestion],
+		describer:String
+	}
+
+	interface infQuestion extends mongoose.Document{
+		pollId:String,
+		describer:String,
+		Answers:[String]
+	}
+
+
+	interface Iquestion{
+		describer:String,
+		Answers:String[]
+	}
+
+
+	interface IPoll{
+		questionsQueue:Iquestion[]
+		PollDescriber:String;
+		ownerId:number;
+	}
+
+
+
+
+	
 }
 
-export interface IPoll{
-	questionsQueue:Iquestion[]
-    PollDescriber:String;
-    ownerId:number;
-}
+
+export default I;

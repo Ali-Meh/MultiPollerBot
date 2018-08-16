@@ -23,6 +23,10 @@ const Tcfg=require('./../Config/Tcfg.json');
 
 let bot=new telegram(Tcfg.botApi,{polling:true});
 
+// bot.on("message",(args)=>{
+//     console.log(JSON.stringify(args,undefined,4));
+    
+// })
 
 new pollingHandler(bot);
 

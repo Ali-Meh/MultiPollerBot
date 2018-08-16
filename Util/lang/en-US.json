@@ -11,13 +11,21 @@
     "Error_endQuestion_failed":"sorry some thing  went wrong you haven't added answers or aren't in poll setup run /new",
     "Error_endQuestion_less2":"need to add at least 2 Answers per user please add more then call /endQuestion",
     "Error_myPollsNotFound":"no poll finded",
+    "Error_noPoll_ToStart":"sorry but no poll founded for the specified Id \n\nrun /myPolls to see your polls",
 
 
 
     "notify_addedTodatabase":"Seccess!!! your poll added to database run /myPolls to see your polls",
     "notify_myPollsKeyboardUpdate":"Your Polls are showen below 👇",
+    "notify_Run_New_start":"please Run /new to set up a Poll",
+    "notify_PollEnds":"Poll Ended now you can view the reasults so far",
 
 
 
-    "Message_Run_Start":"please use the Buttom below to porticipate in the Poll \n\n\n\n"
+    "Message_Run_Start":"please use the Buttom below to porticipate in the Poll \n\n\n\n",
+
+
+
+    "Inline_Vote":"Vote!!!",
+    "Inline_New_Poll":"NEW Poll"
 }

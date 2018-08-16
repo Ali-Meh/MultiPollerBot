@@ -1,5 +1,6 @@
 import * as I from './modelInterfases'
 import telegram from 'node-telegram-bot-api';
+import { Question } from '../Model/Models';
 
 export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
     let options:String[]=new Array();
@@ -18,10 +19,10 @@ export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
     return opts;
 }
 
-export function MakeInLineMarkUpAnswers(question:I.infQuestion):telegram.InlineKeyboardMarkup{
+export function MakeInLineMarkUpAnswers(question:I.infQuestion,Qidx:number):telegram.InlineKeyboardMarkup{
     let options:Array<telegram.InlineKeyboardButton>=new Array();
     for(let i=0;i<question.Answers.length;i++){
-        options.push({text:question.Answers[i].toString(),callback_data:question.pollId+"-"+question._id+"-"+question.Answers[i].toString()});        
+        options.push({text:(i+1).toString(),callback_data:question.pollId+"-"+Qidx+"-"+i});        
     }
 
     let opts:telegram.InlineKeyboardMarkup = {
@@ -32,6 +33,28 @@ export function MakeInLineMarkUpAnswers(question:I.infQuestion):telegram.InlineK
     return opts;
 }
 
+export function GeneratePoll(poll:I.infPoll,QIdx:number):string{
+    if(QIdx>=poll.questions.length){
+        throw new Error("question Query is More than Questions Count");
+    }
+    /**question <bold>
+     * 
+     * (number) answer
+     * 
+     */
+    let Message:string;
+    let Q=poll.questions[QIdx];
+    Message="<b>"+Q.describer+"</b>\n\n\n\n";
+    for(let i=0;i<Q.Answers.length;i++){
+        Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i]+"\n\n";
+    }
+    return Message;
+}
+
+
+
+
+export function GenPollResualts(poll:I.infPoll){}//todo for showing the reasults so far for the poll
 
 export function ShareInlineKeyboard(Id:number){ //todo add the share keyboard
 

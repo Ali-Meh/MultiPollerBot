@@ -1,5 +1,5 @@
 import * as DBHandler from '../Model/DBHandler';
-import * as I from'./modelInterfases';
+import I from'./modelInterfases';
 
 
 
@@ -10,7 +10,13 @@ export async function findPollsByOwner(userID:number){
     }
     return undefined;
 }
-
+export async function findPollsById(pollId:string){
+    let dbPolls:I.infPoll|null=await DBHandler.findPollById(pollId);
+    if(dbPolls){
+        return dbPolls;
+    }
+    return undefined;
+}
 
 export function IToDBI(input:I.IPoll) {
     let Dpoll=DBHandler.Getdpoll();

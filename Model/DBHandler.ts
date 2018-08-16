@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import {User,Question,Poll} from "./Models";
+import {user,answer,Question,Poll} from "./Models";
 import DBcfg from "../Config/DBcfg";
-import * as dbinf from "../Util/modelInterfases"
+import I from "../Util/modelInterfases"
 
 
 mongoose.connect(DBcfg.geturl(),(err)=>{
@@ -13,9 +13,29 @@ mongoose.connect(DBcfg.geturl(),(err)=>{
     }
 });
 
-let Dpoll=mongoose.model<dbinf.infPoll>("poll",Poll);
-let Duser=mongoose.model("UserAnswered",User);
-let Dquestion=mongoose.model<dbinf.infQuestion>("Question",Question);
+let Dpoll=mongoose.model<I.infPoll>("poll",Poll);
+let Danswer=mongoose.model<I.InfAnswers>("Answers",answer);
+let Dquestion=mongoose.model<I.infQuestion>("Question",Question);
+let Duser=mongoose.model<I.InfUser>("user",user);
+
+export async function addAnswer(answerIn:I.IAnswers){//test
+    let answersSoFar=await Danswer.findOne({pollId:answerIn.pollId});
+    if(answersSoFar){//poll finded
+        if(answersSoFar.users){
+            
+        }
+
+    }else{//no answer for the poll
+
+    }
+    // answersSoFar.save();
+    return answersSoFar;
+}
+export async function AnswersByPollID(pollId:string){
+    return await Danswer.findOne({pollId:pollId});
+}
+
+
 
 export async function addPoll(polle:{ownerId:number,describer:string}){
     let pollee=new Dpoll();
@@ -44,6 +64,10 @@ export async function addQuestionToPoll(PollId:string,qustion:{describer:String,
 
 export async function findUserPolles(UserID:number){
     return Dpoll.find({ownerId:UserID})
+}
+
+export async function findPollById(pollId:string){
+    return Dpoll.findById(pollId);
 }
 
 export function Getdpoll(){

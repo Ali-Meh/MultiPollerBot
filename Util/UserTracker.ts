@@ -5,6 +5,7 @@ export enum Track{
     polldescriber,
     addQuestion,
     addAnswer,
+    polling,
 }
 export interface UserTrack{
     userid:number,

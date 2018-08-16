@@ -25,26 +25,57 @@ export class botMsgHandler{
             
         })
 
+        bot.onText(/\/start (.+)/,(msg ,match)=>{
+            if(match){ 
+                dbUtil.findPollsById(match[1]).then((poll)=>{
+                    if(poll){
+                        bot.sendMessage(msg.chat.id,poll.describer.toString())//todo Make a nice Message for it
+                        bot.sendMessage(msg.chat.id,uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0)});
+                    }else{//fixme Error no Poll finded
+                        bot.sendMessage(msg.chat.id,lang.Error_noPoll_ToStart)
+                    }
+                })
+            }
+        });
+
+
+
+
+
+        bot.onText(/^\/start$/, (msg) => {
+            bot.sendMessage(msg.chat.id,lang.notify_Run_New_start);
+            TrackUtil.setState(msg.chat.id,Track.polling);
+            
+        });
+        bot.onText(/^\/start new$/, (msg) => {
+            bot.sendMessage(msg.chat.id,lang.notify_Run_New_start);
+            TrackUtil.setState(msg.chat.id,Track.polling);
+        });
+
+
+
+
         bot.on("text",(msg:telegram.Message)=>{
             if(msg.text){
             let poller;
                 if(msg.text.indexOf("/myPolls")>-1){
                     dbUtil.findPollsByOwner(msg.chat.id).then((polls)=>{
-                        if(polls){
-                            bot.sendMessage(msg.chat.id,lang.notify_myPollsKeyboardUpdate,uiUtil.MakeMarkUp(polls));
+                    if(polls){
+                        bot.sendMessage(msg.chat.id,lang.notify_myPollsKeyboardUpdate,uiUtil.MakeMarkUp(polls));
+                        TrackUtil.setState(msg.chat.id,Track.polling);
 
-    bot.sendMessage(msg.chat.id, 'Share:', {
-        reply_markup: {
-            inline_keyboard: [[{
-                text: 'Share with your friends',
-                switch_inline_query: 'hello',
-                callback_data:"I don't Know"
-            }]]
-        }
-    })
+                        bot.sendMessage(msg.chat.id, 'Share:', {
+                            reply_markup: {
+                                inline_keyboard: [[{
+                                    text: 'Share with your friends',
+                                    switch_inline_query: 'hello',
+                                    callback_data:"I don't Know"
+                                }]]
+                            }
+                        })
 
-                            return;
-                        }
+                        return;
+                    }
                         bot.sendMessage(msg.chat.id,lang.Error_myPollsNotFound);
                         return;
                     })
@@ -94,6 +125,8 @@ export class botMsgHandler{
 
                     if(poller){
                         switch (user.trace) {
+                            case Track.polling:
+                                break;
                             case Track.polldescriber:
                                 TrackUtil.setState(msg.chat.id,Track.addQuestion)
                                 // bot.emit("text",msg);
