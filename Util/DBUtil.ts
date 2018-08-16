@@ -1,7 +1,23 @@
 import * as DBHandler from '../Model/DBHandler';
 import I from'./modelInterfases';
 
+export async function addAnswer(data:I.CalbackData,userid:number){//test 
+    let poll=await findPollsById(data.pollId);
+    if(poll){
+        let Q=poll.questions[data.Qidx];
+        let answer:I.IAnswers={
+            pollId:data.pollId,
+            user:{
+                userIdHash:userid.toString(),//todo Hash the id
+                answers:[{questionID:Q.id,answerId:(Number(data.ChosenAnswer)+1)}]
+            }
+        }
+        DBHandler.addAnswer(answer);
+    }else{//fixme no poll finded
 
+    }
+    return poll;
+}
 
 export async function findPollsByOwner(userID:number){
     let dbPolls:I.infPoll[]=await DBHandler.findUserPolles(userID);

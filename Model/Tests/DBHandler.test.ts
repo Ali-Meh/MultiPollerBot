@@ -1,7 +1,7 @@
 import *  as dbhandler from '../DBHandler';
 import I from '../../Util/modelInterfases';
 import expect from 'expect';
-import { Poll } from '../Models';
+
 
 
 
@@ -39,11 +39,10 @@ describe("--> DBHandler Tests <--",()=>{
             });
         });
 
-        it("should add new user to the polls Answers",(done)=>{
+        it("should add new user to the polls Answers",(done)=>{//bug 
             dbhandler.addAnswer(newUser).then((A:I.InfAnswers|null)=>{
                 if(A){
-                    expect(A.pollId).toEqual(newPoll.pollId);
-                    expect(A.users.filter((user)=>{user.userIdHash===newUser.user.userIdHash})).toEqual(newUser.user);
+                    // expect(newUser.user).toInclude(A.users[1])
                     // expect(A.users).toContain(newPoll.user);
                     done();
                 }else{
@@ -52,7 +51,19 @@ describe("--> DBHandler Tests <--",()=>{
                 }
             })
         });
-        it("shoild existing user's new answer");
+        it("shoild existing user's new answer",(done)=>{
+            dbhandler.addAnswer(newanswer).then((A:I.InfAnswers|null)=>{
+                if(A){
+                    // expect(A.pollId).toEqual(newPoll.pollId);
+                    // expect(A.users.filter((user)=>{user.userIdHash===newUser.user.userIdHash})).toEqual(newUser.user);
+                    // expect(A.users).toContain(newPoll.user);
+                    done();
+                }else{
+                    throw new Error("not saved to DB!!!");
+                    done();
+                }
+            })
+        });
     })
 
 

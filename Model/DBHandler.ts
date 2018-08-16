@@ -19,16 +19,25 @@ let Dquestion=mongoose.model<I.infQuestion>("Question",Question);
 let Duser=mongoose.model<I.InfUser>("user",user);
 
 export async function addAnswer(answerIn:I.IAnswers){//test
-    let answersSoFar=await Danswer.findOne({pollId:answerIn.pollId});
+    let answersSoFar=await AnswersByPollID(answerIn.pollId.toString());
     if(answersSoFar){//poll finded
-        if(answersSoFar.users){
-            
+        let user=answersSoFar.users.filter((U)=>U.userIdHash===answerIn.user.userIdHash);
+        if(user.length>0){//user Existes
+            answerIn.user.answers.forEach((A)=>{
+                user[0].answers.push(A)
+            })
+        }else{//user not Found
+            user[0]=new Duser(answerIn.user);
+            console.log(JSON.stringify(user[0],undefined,4));
+            answersSoFar.users.push(user[0]);
         }
-
     }else{//no answer for the poll
-
+        user[0]=new Duser(answerIn.user);
+        answersSoFar=new Danswer();
+        answersSoFar.pollId=answerIn.pollId;
+        answersSoFar.users.push(user[0]);
     }
-    // answersSoFar.save();
+    answersSoFar.save();
     return answersSoFar;
 }
 export async function AnswersByPollID(pollId:string){
@@ -63,7 +72,11 @@ export async function addQuestionToPoll(PollId:string,qustion:{describer:String,
 }
 
 export async function findUserPolles(UserID:number){
-    return Dpoll.find({ownerId:UserID})
+    let polls=await Dpoll.find({ownerId:UserID});
+    console.log(JSON.stringify(UserID,undefined,4));
+    console.log(JSON.stringify(polls,undefined,4));
+    
+    return polls;
 }
 
 export async function findPollById(pollId:string){
@@ -76,3 +89,4 @@ export function Getdpoll(){
 export function GetDquestion() {
     return Dquestion;
 }
+

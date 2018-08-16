@@ -44,7 +44,11 @@ declare namespace I{
 		ownerId:number;
 	}
 
-
+	interface CalbackData{
+		pollId:string,
+		Qidx:number,
+		ChosenAnswer:string
+	}
 
 
 	

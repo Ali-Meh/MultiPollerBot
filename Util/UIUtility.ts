@@ -1,4 +1,4 @@
-import * as I from './modelInterfases'
+import I from './modelInterfases'
 import telegram from 'node-telegram-bot-api';
 import { Question } from '../Model/Models';
 

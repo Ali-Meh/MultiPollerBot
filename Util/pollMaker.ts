@@ -32,7 +32,7 @@ export class pollMaker{
         pollMaker.queuedPolls.push(this);
     }
 
-    public AddQuestion(des:string){
+    public AddQuestion(des:string){//bug doesntt kepp the order right
         this.TempQuestion=new question(des);
         this.questionsQueue.push(this.TempQuestion);
     }

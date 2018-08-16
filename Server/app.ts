@@ -1,9 +1,7 @@
 import telegram from 'node-telegram-bot-api';
 import {botMsgHandler} from './msgHandler'
 import pollingHandler from './PollingHandler';
-
-const Tcfg=require('./../Config/Tcfg.json');
-
+import Tcfg from '../Config/Tcfg';
 
 /** web hook to run */
 // const options = {
@@ -21,12 +19,9 @@ const Tcfg=require('./../Config/Tcfg.json');
 // bot.setWebHook(`${url}/bot${TOKEN}`);
 // console.log(`the webhook set to ${url}/bot${TOKEN} `);
 
-let bot=new telegram(Tcfg.botApi,{polling:true});
+let bot=new telegram(Tcfg.getApi(),{polling:true});
 
-// bot.on("message",(args)=>{
-//     console.log(JSON.stringify(args,undefined,4));
-    
-// })
+
 
 new pollingHandler(bot);
 
