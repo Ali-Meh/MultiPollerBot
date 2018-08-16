@@ -4,7 +4,8 @@ var Schema = require('mongoose').Schema;
 
 export let user=new Schema({
 	userIdHash:String,
-	answers:[{questionID:String,answerId:Number}]
+	answers:[{questionID:String,answerId:Number}],
+	polling:Boolean
 })
 
 export let answer=new Schema({

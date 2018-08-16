@@ -1,6 +1,24 @@
 import I from './modelInterfases'
 import telegram from 'node-telegram-bot-api';
-import { Question } from '../Model/Models';
+
+
+
+//if Qidx<1 no prev
+//if Qidx>=length-1 of Q's no next
+//a botuom to update corrent
+export function MakeInLineMarkUpResultes(poll:I.infPoll,QIdx:number,/* answers */){//
+
+
+    let Message:string;
+    let Q=poll.questions[QIdx];
+    Message="<b>"+Q.describer+"</b>\n\n\n\n";
+    for(let i=0;i<Q.Answers.length;i++){
+        Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i]+"\n\n";
+    }
+}
+
+
+
 
 export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
     let options:String[]=new Array();

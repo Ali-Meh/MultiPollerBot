@@ -1,5 +1,5 @@
 import telegram, { InlineQueryResultArticle } from 'node-telegram-bot-api';
-import { findPollsByOwner ,findPollsById, addAnswer} from '../Util/DBUtil';
+import { findPollsByOwner ,findPollsById, addAnswer,checkUserState,setUserState} from '../Util/DBUtil';
 import * as UIUtil from '../Util/UIUtility';
 import langSelector from '../Util/lang/langSelector';
 import I from '../Util/modelInterfases';
@@ -34,9 +34,8 @@ export default class pollingHandler{
                             } 
                             Querys.push(query);
                         });
-                        console.log(JSON.stringify(Querys,undefined,4));
                     }
-                    bot.answerInlineQuery(args.id,Querys,{switch_pm_text:lang.Inline_New_Poll,switch_pm_parameter:"new",is_personal:true});
+                    bot.answerInlineQuery(args.id,Querys,{switch_pm_text:lang.Inline_New_Poll,switch_pm_parameter:"new",is_personal:true,cache_time:10});
                 }).catch((err)=>{
                     console.error(err);
                 })
@@ -53,18 +52,31 @@ export default class pollingHandler{
 
                 // update the Question
                 findPollsById(callbackData.pollId).then((poll)=>{
-                    if(poll&&args.message){
-                        try {
-                            bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx+1),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
-                                bot.editMessageReplyMarkup(UIUtil.MakeInLineMarkUpAnswers(poll.questions[callbackData.Qidx+1],callbackData.Qidx+1),{chat_id:args.from.id,message_id:msg.message_id});
-                            });                         
+                    if(poll){
+                        checkUserState(poll.id,args.from.id).then((state)=>{
+                            if((state===undefined||state===true)&&args.message){
+                                try {
+                                    bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx+1),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
+                                        bot.editMessageReplyMarkup(UIUtil.MakeInLineMarkUpAnswers(poll.questions[callbackData.Qidx+1],callbackData.Qidx+1),{chat_id:args.from.id,message_id:msg.message_id});
+                                    });                         
+        
+                                } catch (error) {//todo change the keys to viewing 
+                                    bot.sendMessage(args.from.id,lang.notify_PollEnds);
+                                    setUserState(poll.id,args.from.id,false);
+                                    bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
+                                        bot.editMessageReplyMarkup({inline_keyboard:[[{text:"next!",callback_data:(callbackData.Qidx+1).toString()},
+                                        {text:"previouse!",callback_data:(callbackData.Qidx-1).toString()}]]},{chat_id:args.from.id,message_id:msg.message_id});
+                                    })
+                                }
+                            }else{//done the poll and now gotta show the results
+                                if(args.message)
+                                    bot.sendMessage(args.message.chat.id,"you have answerd the poll Thancks");
+                            }
+                        })
 
-                        } catch (error) {
-                            bot.sendMessage(args.from.id,lang.notify_PollEnds);//todo change the track to view the resualts
-                        }
                         //bot.editMessageReplyMarkup(args.from.id,uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0)});
                     }else{//fixme Error no Poll finded
-                        bot.sendMessage(args.from.id,lang.Error_noPoll_ToStart)//test
+                        bot.sendMessage(args.from.id,lang.Error_noPoll_ToStart)
                     }
                 })
             }

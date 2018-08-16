@@ -29,8 +29,15 @@ export class botMsgHandler{
             if(match){ 
                 dbUtil.findPollsById(match[1]).then((poll)=>{
                     if(poll){
-                        bot.sendMessage(msg.chat.id,poll.describer.toString())//todo Make a nice Message for it
-                        bot.sendMessage(msg.chat.id,uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0)});
+                       dbUtil.checkUserState(poll.id,msg.chat.id).then((state)=>{
+                            if(state!==false){
+                                bot.sendMessage(msg.chat.id,poll.describer.toString())//todo Make a nice Message for it
+                                bot.sendMessage(msg.chat.id,uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0)});
+                            
+                            }else{//user already answerd the Q's//todo add viewing props 
+                                bot.sendMessage(msg.chat.id,"you have answerd the poll Thanks");
+                            }
+                        })
                     }else{//fixme Error no Poll finded
                         bot.sendMessage(msg.chat.id,lang.Error_noPoll_ToStart)
                     }

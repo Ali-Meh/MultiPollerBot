@@ -1,7 +1,37 @@
 import * as DBHandler from '../Model/DBHandler';
 import I from'./modelInterfases';
+import { answer } from '../Model/Models';
 
-export async function addAnswer(data:I.CalbackData,userid:number){//test 
+interface IuserAnswer{questionID:String,answerId:Number}
+
+export async function calcAnswers(pollId:string,questionID:string){
+    let Answers=await DBHandler.AnswersByPollID(pollId);
+    if(Answers){
+        let questions:Array<IuserAnswer>=new Array();
+        for(let i=0;i<Answers.users.length;i++){
+            let userAnswer=Answers.users[i].answers.filter((answer)=>{answer.questionID===questionID});
+            questions.push(userAnswer[0]);
+        }
+        
+    }else{
+        //set all to 0 
+    }
+}
+
+
+
+
+export async function checkUserState(pollId:string,userid:number){
+    return setUserState(pollId,userid);
+}
+export async function setUserState(pollId:string,userid:number,state?:boolean){
+    let user=await DBHandler.FindPollingUser(pollId,userid.toString(),state);
+    if(user&&user.length>0){
+        return user[0].polling;
+    }
+    return undefined;//todo hash the id
+}
+export async function addAnswer(data:I.CalbackData,userid:number){
     let poll=await findPollsById(data.pollId);
     if(poll){
         let Q=poll.questions[data.Qidx];

@@ -13,7 +13,8 @@ declare namespace I{
 	}
 	interface InfUser extends mongoose.Document{
 		userIdHash:String,
-		answers:[{questionID:String,answerId:Number}]
+		answers:[{questionID:String,answerId:Number}],
+		polling:boolean
 	}
 	interface IAnswers{
 		pollId:String,
