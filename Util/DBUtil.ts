@@ -1,5 +1,6 @@
 import * as DBHandler from '../Model/DBHandler';
 import I from'./modelInterfases';
+import crypt from './cryptoUtil';
 
 
 
@@ -54,7 +55,7 @@ export async function checkUserState(pollId:string,userid:number){
     return setUserState(pollId,userid);
 }
 export async function setUserState(pollId:string,userid:number,state?:boolean){
-    let user=await DBHandler.FindPollingUser(pollId,userid.toString(),state);
+    let user=await DBHandler.FindPollingUser(pollId,crypt(userid),state);
     if(user&&user.length>0){
         return user[0].polling;
     }
@@ -67,7 +68,7 @@ export async function addAnswer(data:I.CalbackData,userid:number){
         let answer:I.IAnswers={
             pollId:data.pollId,
             user:{
-                userIdHash:userid.toString(),//todo Hash the id
+                userIdHash:crypt(userid),//todo Hash the id
                 answers:[{questionID:Q.id,answerId:(Number(data.ChosenAnswer)+1)}]
             }
         }
