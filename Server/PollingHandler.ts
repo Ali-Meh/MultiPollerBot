@@ -3,6 +3,7 @@ import { findPollsByOwner ,findPollsById, addAnswer,checkUserState,setUserState,
 import * as UIUtil from '../Util/UIUtility';
 import langSelector from '../Util/lang/langSelector';
 import I from '../Util/modelInterfases';
+import { Question } from '../Model/Models';
 const lang=langSelector();
 
 
@@ -59,13 +60,20 @@ export default class pollingHandler{
                                     bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx+1),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
                                         bot.editMessageReplyMarkup(UIUtil.MakeInLineMarkUpAnswers(poll.questions[callbackData.Qidx+1],callbackData.Qidx+1),{chat_id:args.from.id,message_id:msg.message_id});
                                     });                         
-        
                                 } catch (error) { 
                                     setUserState(poll.id,args.from.id,false);
                                     calcAnswers(callbackData.pollId,callbackData.Qidx).then((count)=>{
                                         if(args.message){
                                             bot.sendMessage(args.from.id,lang.notify_PollEnds);
-                                            UIUtil.callbackUIMaker(bot,poll,callbackData,args.from.id,args.message.message_id,count);
+                                            let argss:telegram.CallbackQuery={
+                                                id: args.id+"1",
+                                                from: args.from,
+                                                message: args.message,
+                                                chat_instance: args.chat_instance,
+                                                data: poll.id+"-"+callbackData.Qidx+"-"+"update",
+                                            }
+                                            bot.emit("callback_query",argss);
+                                            // UIUtil.callbackUIMaker(bot,poll,callbackData,args.from.id,args.message.message_id,count);
                                         }
                                     })
                                 }

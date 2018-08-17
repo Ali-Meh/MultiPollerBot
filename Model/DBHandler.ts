@@ -51,7 +51,7 @@ export async function addAnswer(answerIn:I.IAnswers){
     if(answersSoFar){//poll finded
         let user=answersSoFar.users.filter((U)=>U.userIdHash===answerIn.user.userIdHash);
         if(user.length>0){//user Existes
-            answerIn.user.answers.forEach((A)=>{
+            answerIn.user.answers.forEach((A)=>{//bug on one question poll throws error
                 user[0].answers.push(A)
             })
         }else{//user not Found

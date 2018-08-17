@@ -19,8 +19,8 @@ export class botMsgHandler{
 
     HandleNewPoll(){
         var bot=this.Tbot;
-        bot.onText(/^\/new$/,(msg)=>{// here we get the desciber for the poll
-            bot.sendMessage(msg.chat.id,lang.new);
+        bot.onText(/^\/new$/,(msg)=>{// //bug
+            bot.sendMessage(msg.chat.id,lang.new,{reply_markup:{remove_keyboard:true}});
             TrackUtil.setState(msg.chat.id,Track.polldescriber);
             
         })
@@ -32,16 +32,21 @@ export class botMsgHandler{
                        dbUtil.checkUserState(poll.id,msg.chat.id).then((state)=>{
                             if(state!==false){
                                 bot.sendMessage(msg.chat.id,poll.describer.toString())//todo Make a nice Message for it
+
+                                // bot.sendMessage(msg.chat.id,lang.notify_loadingPoll).then((message:any)=>{
+                                //     bot.editMessageText(uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0),chat_id:msg.chat.id,message_id:message.message_id}).then((msg:any)=>{
+                                //         bot.editMessageReplyMarkup(uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0),{chat_id:msg.chat.id,message_id:message.message_id});
+                                //     });  
+                                // })
+
                                 bot.sendMessage(msg.chat.id,uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0)});
                             
-                            }else{//user already answerd the Q's//todo add viewing props 
+                            }else{//user already answerd the Q's\
                                 bot.sendMessage(msg.chat.id,lang.notify_haveAnswered);
                                 bot.sendMessage(msg.chat.id,lang.notify_loadingPoll).then((message:any)=>{
-                                    if(message){
-                                        dbUtil.calcAnswers(poll.id,0).then((count)=>{
-                                            uiUtil.callbackUIMaker(bot,poll,{pollId:poll.id,Qidx:0,ChosenAnswer:"view"},msg.chat.id,message.message_id,count);
-                                        })
-                                    }
+                                    dbUtil.calcAnswers(poll.id,0).then((count)=>{
+                                        uiUtil.callbackUIMaker(bot,poll,{pollId:poll.id,Qidx:0,ChosenAnswer:"view"},msg.chat.id,message.message_id,count);
+                                    })
                                 })
 
                             }
@@ -58,12 +63,12 @@ export class botMsgHandler{
 
 
         bot.onText(/^\/start$/, (msg) => {
-            bot.sendMessage(msg.chat.id,lang.notify_Run_New_start);
+            bot.sendMessage(msg.chat.id,lang.notify_Run_New_start,{reply_markup:{keyboard:[[{text:"/new"}]],resize_keyboard:true}});
             TrackUtil.setState(msg.chat.id,Track.polling);
             
         });
         bot.onText(/^\/start new$/, (msg) => {
-            bot.sendMessage(msg.chat.id,lang.notify_Run_New_start);
+            bot.sendMessage(msg.chat.id,lang.notify_Run_New_start,{reply_markup:{keyboard:[[{text:"/new"}]],resize_keyboard:true}});
             TrackUtil.setState(msg.chat.id,Track.polling);
         });
 
@@ -91,7 +96,7 @@ export class botMsgHandler{
 
                         return;
                     }
-                        bot.sendMessage(msg.chat.id,lang.Error_myPollsNotFound);
+                        bot.sendMessage(msg.chat.id,lang.Error_myPollsNotFound,{reply_markup:{keyboard:[[{text:"/new"}]],resize_keyboard:true}});
                         return;
                     })
 
@@ -104,39 +109,44 @@ export class botMsgHandler{
                     }else if(poller){
                         if(poller.TempQuestion&&poller.TempQuestion.Answers.length<2)
                         {
-                            bot.sendMessage(msg.chat.id,lang.Error_endQuestion_less2);
+                            bot.sendMessage(msg.chat.id,lang.Error_endQuestion_less2,{reply_markup:{remove_keyboard:true}});
                             return;
                         }
                     }
                     else if(!poller){
-                        bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd);
+                        bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd,{reply_markup:{keyboard:[[{text:"/new"}]],resize_keyboard:true}});
                         return;
                     }
-                    bot.sendMessage(msg.chat.id,lang.Track_endQuestion);
+                    bot.sendMessage(msg.chat.id,lang.Track_endQuestion,{reply_markup:{keyboard:[[{text:"/endPoll"}]],resize_keyboard:true}});
                     TrackUtil.setState(msg.chat.id,Track.addQuestion);
                     bot.sendMessage(msg.chat.id,lang.Track_addQuestion);
                     return;
                 }
                 if(msg.text.indexOf("/endPoll")>-1){//start saving to data base and clening the poll Queue
                     poller=pollMaker.userPoll(msg.chat.id,".")
+                    TrackUtil.setState(msg.chat.id,Track.polling);
                     if(poller){
                         if((poller.PollDescriber===".")||!TrackUtil.FindState(msg.chat.id)){
-                            bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd);
+                            bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd,{reply_markup:{keyboard:[[{text:"/new"}]],resize_keyboard:true}});
+
                             // bot.sendMessage(msg.chat.id,lang.JSON.stringify(v,undefined,4));
                             return;
                         }
-                        bot.sendMessage(msg.chat.id,lang.notify_addedTodatabase);//fixme no option yet runs the get answer track
+                        bot.sendMessage(msg.chat.id,lang.notify_addedTodatabase,{reply_markup:{keyboard:[[{text:"/myPolls"}]],resize_keyboard:true}});//fixme no option yet runs the get answer track
                         poller.addToDatabase();
                         return;
                     }else{
-                        bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd);
+                        bot.sendMessage(msg.chat.id,lang.Error_noPollToEnd,{reply_markup:{keyboard:[[{text:"/new"}]],resize_keyboard:true}});
                         return;
                     }
                 }
     
                 let user=TrackUtil.FindState(msg.chat.id);
+                
                 if(user){
-                    poller=pollMaker.userPoll(msg.chat.id,msg.text);
+
+                    if(user.trace!==Track.polling)
+                        poller=pollMaker.userPoll(msg.chat.id,msg.text);
 
                     if(poller){
                         switch (user.trace) {
@@ -148,12 +158,12 @@ export class botMsgHandler{
                                 bot.sendMessage(msg.chat.id,lang.Track_addQuestion)
                                 break;
                             case Track.addQuestion:
-                                bot.sendMessage(msg.chat.id,lang.Track_addAnswer)
+                                bot.sendMessage(msg.chat.id,lang.Track_addAnswer,{reply_markup:{keyboard:[[{text:"/endQuestion"}]],resize_keyboard:true}})
                                 poller.AddQuestion(msg.text);
                                 TrackUtil.setState(msg.chat.id,Track.addAnswer);
                                 break;
                             case Track.addAnswer:
-                                bot.sendMessage(msg.chat.id,lang.Track_addAnswer)                           
+                                bot.sendMessage(msg.chat.id,lang.Track_addAnswer,{reply_markup:{keyboard:[[{text:"/endQuestion"}]],resize_keyboard:true}})                           
                                 poller.addAnswers(msg.text);
                                 // bot.sendMessage(msg.chat.id,lang.Track_addAnswer);
                                 // TrackUtil.setState(msg.chat.id,Track.addAnswer);

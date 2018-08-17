@@ -27,7 +27,7 @@ export function callbackUIMaker(bot:telegram,poll:I.infPoll,callbackData:I.Calba
     }
     keyboard.push({text:lang.Inline_Update,callback_data:question.pollId+"-"+(callbackData.Qidx)+"-"+"Update"})
     if(callbackData.Qidx<poll.questions.length-1){
-        keyboard.push({text:lang.Inline_Update,callback_data:question.pollId+"-"+(callbackData.Qidx+1)+"-"+"next"})
+        keyboard.push({text:lang.Inline_Next,callback_data:question.pollId+"-"+(callbackData.Qidx+1)+"-"+"next"})
     }
 
 

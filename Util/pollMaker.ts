@@ -35,9 +35,11 @@ export class pollMaker{
     public AddQuestion(des:string){
         this.TempQuestion=new question(des);
         this.questionsQueue.push(this.TempQuestion);
+        
     }
 
     public addAnswers(des:string){
+
         if(this.TempQuestion)
         {
             this.TempQuestion.addAnswer(des);
@@ -50,7 +52,6 @@ export class pollMaker{
             questions:this.questionsQueue,
             describer:this.PollDescriber,
         }
-
         let polled=await addPoll(poll);
 
         for(let i=0;i<this.questionsQueue.length;i++){
