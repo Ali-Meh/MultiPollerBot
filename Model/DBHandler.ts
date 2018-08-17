@@ -44,7 +44,7 @@ export async function FindPollingUser(pollid:string,userHashId:string,setUserSta
 
 
 
-export async function addAnswer(answerIn:I.IAnswers){//test
+export async function addAnswer(answerIn:I.IAnswers){
     let answersSoFar=await AnswersByPollID(answerIn.pollId.toString());
     // console.log(JSON.stringify(answersSoFar,undefined,4));
     

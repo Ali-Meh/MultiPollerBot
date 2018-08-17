@@ -48,42 +48,33 @@ export default class pollingHandler{
             if(args.data){
                 let data=args.data.split("-")
                 let callbackData:I.CalbackData={pollId:data[0],Qidx:Number(data[1]),ChosenAnswer:data[2]};
-                addAnswer(callbackData,args.from.id).then(()=>{});
 
                 // update the Question
                 findPollsById(callbackData.pollId).then((poll)=>{
                     if(poll){
                         checkUserState(poll.id,args.from.id).then((state)=>{
                             if((state===undefined||state===true)&&args.message){
+                                addAnswer(callbackData,args.from.id).then(()=>{});
                                 try {
                                     bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx+1),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
                                         bot.editMessageReplyMarkup(UIUtil.MakeInLineMarkUpAnswers(poll.questions[callbackData.Qidx+1],callbackData.Qidx+1),{chat_id:args.from.id,message_id:msg.message_id});
                                     });                         
         
-                                } catch (error) {//todo change the keys to viewing 
-                                    bot.sendMessage(args.from.id,lang.notify_PollEnds);
+                                } catch (error) { 
                                     setUserState(poll.id,args.from.id,false);
                                     calcAnswers(callbackData.pollId,callbackData.Qidx).then((count)=>{
                                         if(args.message){
-                                            bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx,count),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
-                                                bot.editMessageReplyMarkup({inline_keyboard:[[{text:"pre!",callback_data:(callbackData.Qidx-1).toString()},
-                                                {text:"previouse!",callback_data:(callbackData.Qidx-1).toString()}]]},{chat_id:args.from.id,message_id:msg.message_id});
-                                            })
+                                            bot.sendMessage(args.from.id,lang.notify_PollEnds);
+                                            UIUtil.callbackUIMaker(bot,poll,callbackData,args.from.id,args.message.message_id,count);
                                         }
                                     })
                                 }
                             }else{//done the poll and now gotta show the results
                                 calcAnswers(callbackData.pollId,callbackData.Qidx).then((count)=>{
                                     if(args.message){
-                                        bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx,count),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
-                                            bot.editMessageReplyMarkup({inline_keyboard:[[{text:"pre!",callback_data:(callbackData.Qidx-1).toString()},
-                                            {text:"previouse!",callback_data:(callbackData.Qidx-1).toString()}]]},{chat_id:args.from.id,message_id:msg.message_id});
-                                        })
+                                        UIUtil.callbackUIMaker(bot,poll,callbackData,args.from.id,args.message.message_id,count);
                                     }
                                 })
-
-                                
-
                             }
                         })
 

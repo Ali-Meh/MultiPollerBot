@@ -19,6 +19,8 @@
     "notify_myPollsKeyboardUpdate":"Your Polls are showen below 👇",
     "notify_Run_New_start":"please Run /new to set up a Poll",
     "notify_PollEnds":"Poll Ended now you can view the reasults so far",
+    "notify_loadingPoll":"Poll Loading...",
+    "notify_haveAnswered":"you have answerd the poll Thanks",
 
 
 
@@ -27,5 +29,8 @@
 
 
     "Inline_Vote":"Vote!!!",
-    "Inline_New_Poll":"NEW Poll"
+    "Inline_New_Poll":"NEW Poll",
+    "Inline_Next":"next!",
+    "Inline_Previuse":"pre!",
+    "Inline_Update":"Update"
 }

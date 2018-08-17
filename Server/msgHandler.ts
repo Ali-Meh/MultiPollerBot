@@ -35,7 +35,15 @@ export class botMsgHandler{
                                 bot.sendMessage(msg.chat.id,uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0)});
                             
                             }else{//user already answerd the Q's//todo add viewing props 
-                                bot.sendMessage(msg.chat.id,"you have answerd the poll Thanks");
+                                bot.sendMessage(msg.chat.id,lang.notify_haveAnswered);
+                                bot.sendMessage(msg.chat.id,lang.notify_loadingPoll).then((message:any)=>{
+                                    if(message){
+                                        dbUtil.calcAnswers(poll.id,0).then((count)=>{
+                                            uiUtil.callbackUIMaker(bot,poll,{pollId:poll.id,Qidx:0,ChosenAnswer:"view"},msg.chat.id,message.message_id,count);
+                                        })
+                                    }
+                                })
+
                             }
                         })
                     }else{//fixme Error no Poll finded
@@ -65,7 +73,7 @@ export class botMsgHandler{
         bot.on("text",(msg:telegram.Message)=>{
             if(msg.text){
             let poller;
-                if(msg.text.indexOf("/myPolls")>-1){
+                if(msg.text.indexOf("/myPolls")>-1){//fixme
                     dbUtil.findPollsByOwner(msg.chat.id).then((polls)=>{
                     if(polls){
                         bot.sendMessage(msg.chat.id,lang.notify_myPollsKeyboardUpdate,uiUtil.MakeMarkUp(polls));
@@ -76,7 +84,7 @@ export class botMsgHandler{
                                 inline_keyboard: [[{
                                     text: 'Share with your friends',
                                     switch_inline_query: 'hello',
-                                    callback_data:"I don't Know"
+                                    // callback_data:"I don't Know"
                                 }]]
                             }
                         })

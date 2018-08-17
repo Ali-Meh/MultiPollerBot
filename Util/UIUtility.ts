@@ -1,27 +1,38 @@
 import I from './modelInterfases'
 import telegram from 'node-telegram-bot-api';
-
+import langSelector from '../Util/lang/langSelector';
+const lang=langSelector();
 
 
 //if Qidx<1 no prev
 //if Qidx>=length-1 of Q's no next
 //a botuom to update corrent
-export function MakeInLineMarkUpResultes(poll:I.infPoll,QIdx:number,/* answers */){//
+// export function MakeInLineMarkUpResultes(poll:I.infPoll,QIdx:number,/* answers */){//
 
 
-    let Message:string;
-    let Q=poll.questions[QIdx];
-    Message="<b>"+Q.describer+"</b>\n\n\n\n";
-    for(let i=0;i<Q.Answers.length;i++){
-        Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i]+"\n\n";
+//     let Message:string;
+//     let Q=poll.questions[QIdx];
+//     Message="<b>"+Q.describer+"</b>\n\n\n\n";
+//     for(let i=0;i<Q.Answers.length;i++){
+//         Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i]+"\n\n";
+//     }
+// }
+
+
+export function callbackUIMaker(bot:telegram,poll:I.infPoll,callbackData:I.CalbackData,userId:number,messageId:number,count?:{[key:string]:number}){
+    let keyboard=new Array();
+    let question=poll.questions[callbackData.Qidx]
+    if(callbackData.Qidx>0){
+        keyboard.push({text:lang.Inline_Previuse,callback_data:question.pollId+"-"+(callbackData.Qidx-1)+"-"+"pre"})
     }
-}
+    keyboard.push({text:lang.Inline_Update,callback_data:question.pollId+"-"+(callbackData.Qidx)+"-"+"Update"})
+    if(callbackData.Qidx<poll.questions.length-1){
+        keyboard.push({text:lang.Inline_Update,callback_data:question.pollId+"-"+(callbackData.Qidx+1)+"-"+"next"})
+    }
 
 
-export function callbackUIMaker(bot:telegram,poll:I.infPoll,callbackData:I.CalbackData,count:{[key:string]:number},userId:number,messageId:number){
     bot.editMessageText(GeneratePoll(poll,callbackData.Qidx,count),{chat_id:userId,message_id:messageId,parse_mode:"HTML"}).then((msg:any)=>{
-        bot.editMessageReplyMarkup({inline_keyboard:[[{text:"next!",callback_data:(callbackData.Qidx-1).toString()},
-        {text:"pre!",callback_data:(callbackData.Qidx-1).toString()}]]},{chat_id:userId,message_id:msg.message_id});
+        bot.editMessageReplyMarkup({inline_keyboard:[keyboard]},{chat_id:userId,message_id:msg.message_id});
     })
 }
 
@@ -31,7 +42,7 @@ export function callbackUIMaker(bot:telegram,poll:I.infPoll,callbackData:I.Calba
 export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
     let options:String[]=new Array();
     for(let i=0;i<arrayOFOptions.length;i++){
-        options.push("/share "+(i+1).toString()+" - "+arrayOFOptions[i].describer+" -  with " + arrayOFOptions[i].questions.length+" questions");
+        options.push("/share "+(i+1).toString()+" - "+arrayOFOptions[i].describer+" -  with " + arrayOFOptions[i].questions.length+" questions");//fixme lang file add
     }
     let opts:any = {
         reply_markup: JSON.stringify({
@@ -70,18 +81,18 @@ export function GeneratePoll(poll:I.infPoll,QIdx:number,count?:{[k: string]: num
      */
     let Message:string;
     let Q=poll.questions[QIdx];
-    Message="<b>"+Q.describer+"</b>\n\n\n\n";
+    Message="<b>"+Q.describer+"</b>\n\n\n";
     for(let i=0;i<Q.Answers.length;i++){
-        Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i]+"\n";
+        Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i];
         if(count){
             if(count[(i+1).toString()]){
-                Message+=" - "+count[(i+1).toString()]+"\n";
+                Message+=" - "+count[(i+1).toString()]+"\n\n";
                 let percentege=count[(i+1).toString()]/count["total"]
                 for(let i=0;i<percentege*10;i++)
                     Message+="👍";
                 Message+=percentege*100+"%\n\n"
             }else{
-                Message+="\n";
+                Message+="\n\n";
                 Message+="ℹ️";
                 Message+=0+"%\n\n"
             }
