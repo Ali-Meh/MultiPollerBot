@@ -8,7 +8,7 @@ import expect from 'expect';
 
 
 
-describe("--> DBHandler Tests <--",()=>{
+/* describe("--> DBHandler Tests <--",()=>{
     describe("adding answers",()=>{
         let newPoll:I.IAnswers={
             pollId:"Poll Number 1",
@@ -71,4 +71,4 @@ describe("--> DBHandler Tests <--",()=>{
 
 
 
-})
+}) */

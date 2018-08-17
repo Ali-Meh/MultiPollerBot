@@ -4,6 +4,23 @@ import I from '../../Util/modelInterfases'
 import expect from "expect";
 
 
+describe("count the collection func",()=>{
+    it("shold count the values in an object an return them back",()=>{
+        let obj:I.IuserAnswer[]=[{questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},
+        {questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},
+        {questionID:"123",answerId:4},{questionID:"123",answerId:4},{questionID:"123",answerId:4},{questionID:"123",answerId:1},{questionID:"123",answerId:1},
+        {questionID:"123",answerId:2},{questionID:"123",answerId:2},{questionID:"123",answerId:2},{questionID:"123",answerId:2},{questionID:"123",answerId:2},]
+        let counted=dbUtil.counter(obj);
+        expect(counted["2"]).toEqual(5);
+        expect(counted["4"]).toEqual(3);
+        expect(counted["1"]).toEqual(12);
+        expect(counted["3"]).toEqual(undefined);
+
+    })
+})
+
+
+
 describe("converters in DBUtil",()=>{
     it("should take I.poll and turn it into I.dbPoll",(done)=>{
         let Ipoll:I.IPoll={ownerId:123456,PollDescriber:"some decribetion here",questionsQueue:new Array()};

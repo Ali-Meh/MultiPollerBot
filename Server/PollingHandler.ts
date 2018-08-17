@@ -1,5 +1,5 @@
 import telegram, { InlineQueryResultArticle } from 'node-telegram-bot-api';
-import { findPollsByOwner ,findPollsById, addAnswer,checkUserState,setUserState} from '../Util/DBUtil';
+import { findPollsByOwner ,findPollsById, addAnswer,checkUserState,setUserState,calcAnswers} from '../Util/DBUtil';
 import * as UIUtil from '../Util/UIUtility';
 import langSelector from '../Util/lang/langSelector';
 import I from '../Util/modelInterfases';
@@ -63,14 +63,27 @@ export default class pollingHandler{
                                 } catch (error) {//todo change the keys to viewing 
                                     bot.sendMessage(args.from.id,lang.notify_PollEnds);
                                     setUserState(poll.id,args.from.id,false);
-                                    bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
-                                        bot.editMessageReplyMarkup({inline_keyboard:[[{text:"next!",callback_data:(callbackData.Qidx+1).toString()},
-                                        {text:"previouse!",callback_data:(callbackData.Qidx-1).toString()}]]},{chat_id:args.from.id,message_id:msg.message_id});
+                                    calcAnswers(callbackData.pollId,callbackData.Qidx).then((count)=>{
+                                        if(args.message){
+                                            bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx,count),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
+                                                bot.editMessageReplyMarkup({inline_keyboard:[[{text:"pre!",callback_data:(callbackData.Qidx-1).toString()},
+                                                {text:"previouse!",callback_data:(callbackData.Qidx-1).toString()}]]},{chat_id:args.from.id,message_id:msg.message_id});
+                                            })
+                                        }
                                     })
                                 }
                             }else{//done the poll and now gotta show the results
-                                if(args.message)
-                                    bot.sendMessage(args.message.chat.id,"you have answerd the poll Thancks");
+                                calcAnswers(callbackData.pollId,callbackData.Qidx).then((count)=>{
+                                    if(args.message){
+                                        bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx,count),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{
+                                            bot.editMessageReplyMarkup({inline_keyboard:[[{text:"pre!",callback_data:(callbackData.Qidx-1).toString()},
+                                            {text:"previouse!",callback_data:(callbackData.Qidx-1).toString()}]]},{chat_id:args.from.id,message_id:msg.message_id});
+                                        })
+                                    }
+                                })
+
+                                
+
                             }
                         })
 

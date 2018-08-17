@@ -18,6 +18,14 @@ export function MakeInLineMarkUpResultes(poll:I.infPoll,QIdx:number,/* answers *
 }
 
 
+export function callbackUIMaker(bot:telegram,poll:I.infPoll,callbackData:I.CalbackData,count:{[key:string]:number},userId:number,messageId:number){
+    bot.editMessageText(GeneratePoll(poll,callbackData.Qidx,count),{chat_id:userId,message_id:messageId,parse_mode:"HTML"}).then((msg:any)=>{
+        bot.editMessageReplyMarkup({inline_keyboard:[[{text:"next!",callback_data:(callbackData.Qidx-1).toString()},
+        {text:"pre!",callback_data:(callbackData.Qidx-1).toString()}]]},{chat_id:userId,message_id:msg.message_id});
+    })
+}
+
+
 
 
 export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
@@ -51,7 +59,7 @@ export function MakeInLineMarkUpAnswers(question:I.infQuestion,Qidx:number):tele
     return opts;
 }
 
-export function GeneratePoll(poll:I.infPoll,QIdx:number):string{
+export function GeneratePoll(poll:I.infPoll,QIdx:number,count?:{[k: string]: number}):string{
     if(QIdx>=poll.questions.length){
         throw new Error("question Query is More than Questions Count");
     }
@@ -64,8 +72,27 @@ export function GeneratePoll(poll:I.infPoll,QIdx:number):string{
     let Q=poll.questions[QIdx];
     Message="<b>"+Q.describer+"</b>\n\n\n\n";
     for(let i=0;i<Q.Answers.length;i++){
-        Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i]+"\n\n";
+        Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i]+"\n";
+        if(count){
+            if(count[(i+1).toString()]){
+                Message+=" - "+count[(i+1).toString()]+"\n";
+                let percentege=count[(i+1).toString()]/count["total"]
+                for(let i=0;i<percentege*10;i++)
+                    Message+="👍";
+                Message+=percentege*100+"%\n\n"
+            }else{
+                Message+="\n";
+                Message+="ℹ️";
+                Message+=0+"%\n\n"
+            }
+        }else{
+            Message+="\n\n"
+        }
     }
+    if(count){
+        Message+=count["total"]+"👤 people particpated so far!!!";
+    }
+
     return Message;
 }
 

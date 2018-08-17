@@ -2,22 +2,51 @@ import * as DBHandler from '../Model/DBHandler';
 import I from'./modelInterfases';
 import { answer } from '../Model/Models';
 
-interface IuserAnswer{questionID:String,answerId:Number}
 
-export async function calcAnswers(pollId:string,questionID:string){
+
+export async function calcAnswers(pollId:string,questionID:string|number){
+    let qID:string;
+    if(typeof questionID==="number"){
+        let poll=await DBHandler.findPollById(pollId);
+        if(poll){
+            qID=poll.questions[questionID].id;
+        }
+    }else{
+        qID=questionID;
+    }
     let Answers=await DBHandler.AnswersByPollID(pollId);
     if(Answers){
-        let questions:Array<IuserAnswer>=new Array();
+        let questions:Array<I.IuserAnswer>=new Array();
         for(let i=0;i<Answers.users.length;i++){
-            let userAnswer=Answers.users[i].answers.filter((answer)=>{answer.questionID===questionID});
-            questions.push(userAnswer[0]);
+            // let userAnswer=await Answers.users[i].answers.filter((answer)=>{answer.questionID===qID});
+            Answers.users[i].answers.forEach((a)=>{if(qID===a.questionID){
+                questions.push(a);
+            }})
+            // questions.push(userAnswer[0]);
         }
-        
+        let count=counter(questions);
+        return count;
     }else{
-        //set all to 0 
+        //set all to 0
+        return undefined;//fixme 
     }
 }
-
+ export function counter(collection:I.IuserAnswer[]){
+    if(collection.length>0){
+        let count:{[k: string]: number}={};
+        for(let i=0;i<collection.length;i++){
+            let key=collection[i].answerId.toString()
+            if(count[key]){
+    
+                count[key]++;
+            }else{
+                count[key]=1;
+            }
+        }
+        count["total"]=collection.length;
+        return count;
+    }
+ }
 
 
 

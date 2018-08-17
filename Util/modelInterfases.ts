@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 declare namespace I{
 
-
+	interface IuserAnswer{questionID:String,answerId:Number}
 	interface Iuser{
 		userIdHash:String,
 		answers:[{questionID:String,answerId:Number}]
