@@ -5,36 +5,38 @@ import pollingHandler from './PollingHandler';
 let tcfg;
 try {
     tcfg=require('../Config/Tcfg');
+    console.log(JSON.stringify(tcfg,undefined,4));
+    
     
 } catch (error) {
     if(!process.env.ApiKey){
         console.error("You Haven't Specifide Config files nor Env's Go To read Me and specify the wanted Envirement Variables Or Create Config Files wanted ");
     }
-
 }
 
-/*****************************************************************if you wanna poll comment this  part ************************************/
+/*****************************************************************if you wanna WebHook comment this part and run web Dyno************************************/
 /** web hook to run */
-// const options = {
-//     webHook: {
-//       port: process.env.PORT
-//     }
-//   };
-// TOKEN=process.env.telToken||cfg.getToken();
-// var bot=new telegram(TOKEN,options);
+// @ts-ignore
+const options:telegram.ConstructorOptions = {
+    webHook:{port:process.env.PORT}
+  };
+  let ApiKey=process.env.ApiKey||tcfg.getApi()
+  let bot=new telegram(ApiKey,options);
 
 
 
-// const url = process.env.APP_URL || cfg.herokuUrl;
-// console.log("server started Running");
-// bot.setWebHook(`${url}/bot${TOKEN}`);
-// console.log(`the webhook set to ${url}/bot${TOKEN} `);
+const url = process.env.APP_URL || tcfg.getHerokuUrl();
+console.log("server started Running on "+url);
+bot.setWebHook(`${url}/bot${ApiKey}`);
+console.log(`the webhook set to ${url}/bot${ApiKey} `);
 
-/*****************************************************************if you wanna poll comment this  part ************************************/
+/*****************************************************************if you wanna poll comment this part and Run the Worker Dynos************************************/
 
-let ApiKey=process.env.ApiKey||tcfg.getApi();
+/***************************if Gonna use Polling UnComment This Part*****************************************/
+// let ApiKey=process.env.ApiKey||tcfg.getApi();
+// let bot=new telegram(ApiKey,{polling:true});
+/***************************if Gonna use Polling UnComment This Part*****************************************/
 
-let bot=new telegram(ApiKey,{polling:true});
 
 bot.getMe().then((telbot)=>{
     console.log("Seccess Fully Connected To Telegram Api");
