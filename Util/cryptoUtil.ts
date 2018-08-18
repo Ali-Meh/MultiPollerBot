@@ -2,14 +2,11 @@ import crypto from 'crypto';
 
 
 function GenHash(Userid:number){
-    console.log("user id : "+Userid);
     
     let sha1=crypto.createHash("sha512");
     sha1.update(Userid.toString(),'ascii');
     sha1.update(GenSalt(Userid),'ascii');
-    let hash=sha1.digest('base64');
-    console.log("hashed to "+hash);
-    
+    let hash=sha1.digest('base64');    
     return hash;
 }
 
