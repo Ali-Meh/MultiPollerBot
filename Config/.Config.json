@@ -1,0 +1,12 @@
+{
+    "test":{
+        "ApiKey":"UR_Api_Key",
+        "DBUrl":"MLab_URl",
+        "APP_URL":"Your heroku app !!! Url in case You wanna use WebHooks"
+    },
+    "development":{
+        "ApiKey":"UR_Api_Key",
+        "DBUrl":"MLab_URl",
+        "APP_URL":"Your heroku app !!! Url in case You wanna use WebHooks"
+    }
+}

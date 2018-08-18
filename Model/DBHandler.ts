@@ -1,20 +1,10 @@
 import mongoose from "mongoose";
 import {user,answer,Question,Poll} from "./Models";
-// import DBcfg from "../Config/DBcfg";
 import I from "../Util/modelInterfases"
-let configs;
-try{
-    configs=require("../Config/DBcfg");
-    console.log(JSON.stringify(configs,undefined,4));
-}catch(err){
-    if(!process.env.DBUrl){
-        console.error("You Haven't Specifide Config files nor Env's Go To read Me and specify the wanted Envirement Variables Or Create Config Files wanted ");
-    }
-}
-console.log(JSON.stringify(configs,undefined,4));
 
 
-let DbUrl=process.env.DBUrl||configs.geturl();
+let DbUrl=process.env.DBUrl;
+// @ts-ignore
 mongoose.connect(DbUrl,(err)=>{
     if(err)
         console.log("erroeer: "+JSON.stringify(err,undefined,4));

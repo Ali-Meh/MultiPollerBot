@@ -8,7 +8,7 @@
 
 
 
-rename Folder ``.Config`` to ``Config`` and fill the files in it
+rename file ``Config/.Config.json`` to ``Config/Config.json`` and fill the files in it
 
 
 //setting the Env's and worker if no webhooks specified
