@@ -57,9 +57,9 @@ export async function checkUserState(pollId:string,userid:number){
 export async function setUserState(pollId:string,userid:number,state?:boolean){
     let user=await DBHandler.FindPollingUser(pollId,crypt(userid),state);
     if(user&&user.length>0){
-        return user[0].polling;
+        return user[0];
     }
-    return undefined;//todo hash the id
+    return undefined;
 }
 export async function addAnswer(data:I.CalbackData,userid:number){
     let poll=await findPollsById(data.pollId);

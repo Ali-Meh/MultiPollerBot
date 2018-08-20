@@ -1,5 +1,4 @@
 import * as dbUtil from "../DBUtil";
-import * as dbHandler from '../../Model/DBHandler';
 import I from '../../Util/modelInterfases'
 import expect from "expect";
 
@@ -11,6 +10,10 @@ describe("count the collection func",()=>{
         {questionID:"123",answerId:4},{questionID:"123",answerId:4},{questionID:"123",answerId:4},{questionID:"123",answerId:1},{questionID:"123",answerId:1},
         {questionID:"123",answerId:2},{questionID:"123",answerId:2},{questionID:"123",answerId:2},{questionID:"123",answerId:2},{questionID:"123",answerId:2},]
         let counted=dbUtil.counter(obj);
+        if(counted===undefined){
+            console.error("got counted Undefined");
+            return;
+        }
         expect(counted["2"]).toEqual(5);
         expect(counted["4"]).toEqual(3);
         expect(counted["1"]).toEqual(12);

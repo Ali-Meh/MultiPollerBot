@@ -1,14 +1,49 @@
-# Telegram Multy Poll Bot
-#### Writen and mentained in TS
+# Multi Poller
+> multi Polls in raw one after an other for telegram bot
 
 
-``heloo``
-
-
+Generates Multiple Polls and lets You share the poll and users to answer Them then after lets you extract reasults in CSV Format
 
 
 
-rename file ``Config/.Config.json`` to ``Config/Config.json`` and fill the files in it
+## Installation
+
+* pull the git Repo then run command below
+
+```sh
+npm install
+```
+* edit the [Config](https://github.com/Ali-Meh/MultiPollerBot/blob/master/Config/Config.json) file
+
+* run the code Below
+```sh
+npm start
+or
+npm run wstart
+```
 
 
-//setting the Env's and worker if no webhooks specified
+## Usage example
+the bot demo is available on [Telegram](t.me/multyPollBot)
+
+## Development setup
+
+Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
+
+```sh
+npm install --dev
+npm test
+```
+
+## Contributing
+
+1. Fork [Repo](<https://github.com/Ali-Meh/MultiPollerBot/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Look Over [NExT][Next] file or [issues](https://github.com/Ali-Meh/MultiPollerBot/issues) section
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
+
+<!-- Markdown link & img dfn's -->
+
+[Next]:https://github.com/Ali-Meh/MultiPollerBot/blob/master/NExt.txt

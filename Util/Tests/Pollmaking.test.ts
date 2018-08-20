@@ -1,3 +1,4 @@
+
 import {pollMaker} from '../pollMaker';
 import expect from 'expect';
 

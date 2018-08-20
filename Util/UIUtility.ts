@@ -42,7 +42,7 @@ export function callbackUIMaker(bot:telegram,poll:I.infPoll,callbackData:I.Calba
 export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
     let options:String[]=new Array();
     for(let i=0;i<arrayOFOptions.length;i++){
-        options.push("/share "+(i+1).toString()+" - "+arrayOFOptions[i].describer+" -  with " + arrayOFOptions[i].questions.length+" questions");//fixme lang file add
+        options.push("/extract "+(i+1).toString()+" - "+arrayOFOptions[i].describer+" -  with " + arrayOFOptions[i].questions.length+" questions");//fixme lang file add
     }
     let opts:any = {
         reply_markup: JSON.stringify({
@@ -90,7 +90,7 @@ export function GeneratePoll(poll:I.infPoll,QIdx:number,count?:{[k: string]: num
                 let percentege=count[(i+1).toString()]/count["total"]
                 for(let i=0;i<percentege*10;i++)
                     Message+="👍";
-                Message+=percentege*100+"%\n\n"
+                Message+=Math.round(percentege*100)+"%\n\n"
             }else{
                 Message+="\n\n";
                 Message+="ℹ️";

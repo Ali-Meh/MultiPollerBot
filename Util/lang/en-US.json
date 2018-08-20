@@ -12,6 +12,7 @@
     "Error_endQuestion_less2":"need to add at least 2 Answers per user please add more then call /endQuestion",
     "Error_myPollsNotFound":"no poll finded",
     "Error_noPoll_ToStart":"sorry but no poll founded for the specified Id \n\nrun /myPolls to see your polls",
+    "Error_NotImplmnt":"Not Yet Implemented",
 
 
 

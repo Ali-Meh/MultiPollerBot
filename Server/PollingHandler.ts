@@ -54,7 +54,7 @@ export default class pollingHandler{
                 findPollsById(callbackData.pollId).then((poll)=>{
                     if(poll){
                         checkUserState(poll.id,args.from.id).then((state)=>{
-                            if((state===undefined||state===true)&&args.message){
+                            if((state===undefined||state.polling===true)&&args.message){
                                 addAnswer(callbackData,args.from.id).then(()=>{});
                                 try {
                                     bot.editMessageText(UIUtil.GeneratePoll(poll,callbackData.Qidx+1),{chat_id:args.from.id,message_id:args.message.message_id,parse_mode:"HTML"}).then((msg:any)=>{

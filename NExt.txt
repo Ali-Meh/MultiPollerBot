@@ -1,3 +1,5 @@
+add extraction part
+
 integrate Timered Polles
 
 share the results into groups
@@ -9,3 +11,7 @@ add share poll under every poll
 
 
 attach video or photo to describer
+
+let user send he's own answer
+
+

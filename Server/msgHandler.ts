@@ -5,8 +5,8 @@ const lang=langSelector();
 import {pollMaker} from '../Util/pollMaker';
 import * as dbUtil from '../Util/DBUtil';
 import * as uiUtil from '../Util/UIUtility';
-
 import {Track, TrackUtil} from '../Util/UserTracker';
+
 export class botMsgHandler{
     Tbot:telegram;
     /**
@@ -19,37 +19,45 @@ export class botMsgHandler{
 
     HandleNewPoll(){
         var bot=this.Tbot;
-        bot.onText(/^\/new$/,(msg)=>{// //bug
+        bot.onText(/^\/new$/,(msg)=>{
             bot.sendMessage(msg.chat.id,lang.new,{reply_markup:{remove_keyboard:true}});
             TrackUtil.setState(msg.chat.id,Track.polldescriber);
             
+        })
+
+        bot.onText(/\/extract (.+)/,(msg,match)=>{//todo
+            bot.sendMessage(msg.chat.id,lang.Error_NotImplmnt);
         })
 
         bot.onText(/\/start (.+)/,(msg ,match)=>{
             if(match){ 
                 dbUtil.findPollsById(match[1]).then((poll)=>{
                     if(poll){
-                       dbUtil.checkUserState(poll.id,msg.chat.id).then((state)=>{
-                            if(state!==false){
-                                bot.sendMessage(msg.chat.id,poll.describer.toString())//todo Make a nice Message for it
+                        bot.sendMessage(msg.chat.id,lang.notify_loadingPoll).then((loadMsg:any)=>{                        
+                            dbUtil.checkUserState(poll.id,msg.chat.id).then((state)=>{
+                                if(state===undefined||state.polling===true){//test
+                                    bot.editMessageText(poll.describer.toString(),{parse_mode:"HTML",chat_id:loadMsg.chat.id,message_id:loadMsg.message_id}).then((desMsg:any)=>{
+                                        //fixme check the index of the question not answered
+                                        //@ts-ignore
+                                        let Qidx=state===undefined?0:state.answers.length
+                                        console.log(JSON.stringify(state,undefined,4));
+                                        console.log(JSON.stringify(Qidx,undefined,4));
+                                        
+                                        
 
-                                // bot.sendMessage(msg.chat.id,lang.notify_loadingPoll).then((message:any)=>{
-                                //     bot.editMessageText(uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0),chat_id:msg.chat.id,message_id:message.message_id}).then((msg:any)=>{
-                                //         bot.editMessageReplyMarkup(uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0),{chat_id:msg.chat.id,message_id:message.message_id});
-                                //     });  
-                                // })
-
-                                bot.sendMessage(msg.chat.id,uiUtil.GeneratePoll(poll,0),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[0],0)});
-                            
-                            }else{//user already answerd the Q's\
-                                bot.sendMessage(msg.chat.id,lang.notify_haveAnswered);
-                                bot.sendMessage(msg.chat.id,lang.notify_loadingPoll).then((message:any)=>{
-                                    dbUtil.calcAnswers(poll.id,0).then((count)=>{
-                                        uiUtil.callbackUIMaker(bot,poll,{pollId:poll.id,Qidx:0,ChosenAnswer:"view"},msg.chat.id,message.message_id,count);
+                                        bot.sendMessage(msg.chat.id,uiUtil.GeneratePoll(poll,Qidx),{parse_mode:"HTML",reply_markup:uiUtil.MakeInLineMarkUpAnswers(poll.questions[Qidx],Qidx)});
+                                    });
+                                }else{//user already answerd the Q's\
+                                    bot.editMessageText(lang.notify_haveAnswered,{parse_mode:"HTML",chat_id:loadMsg.chat.id,message_id:loadMsg.message_id})
+                                    // bot.sendMessage(msg.chat.id,lang.notify_haveAnswered);
+                                    bot.sendMessage(msg.chat.id,lang.notify_loadingPoll).then((message:any)=>{
+                                        dbUtil.calcAnswers(poll.id,0).then((count)=>{
+                                            uiUtil.callbackUIMaker(bot,poll,{pollId:poll.id,Qidx:0,ChosenAnswer:"view"},msg.chat.id,message.message_id,count);
+                                        })
                                     })
-                                })
 
-                            }
+                                }
+                            })
                         })
                     }else{//fixme Error no Poll finded
                         bot.sendMessage(msg.chat.id,lang.Error_noPoll_ToStart)
@@ -84,7 +92,7 @@ export class botMsgHandler{
                         bot.sendMessage(msg.chat.id,lang.notify_myPollsKeyboardUpdate,uiUtil.MakeMarkUp(polls));
                         TrackUtil.setState(msg.chat.id,Track.polling);
 
-                        bot.sendMessage(msg.chat.id, 'Share:', {
+                        bot.sendMessage(msg.chat.id, 'Extract:', {
                             reply_markup: {
                                 inline_keyboard: [[{
                                     text: 'Share with your friends',

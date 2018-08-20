@@ -1,3 +1,4 @@
+import '../Config/Config.ts';
 import mongoose from "mongoose";
 import {user,answer,Question,Poll} from "./Models";
 import I from "../Util/modelInterfases"
@@ -57,6 +58,7 @@ export async function addAnswer(answerIn:I.IAnswers){
             })
         }else{//user not Found
             user[0]=new Duser(answerIn.user);
+            user[0].polling=true;
             // console.log(JSON.stringify(user[0],undefined,4));
             answersSoFar.users.push(user[0]);
         }
@@ -70,6 +72,8 @@ export async function addAnswer(answerIn:I.IAnswers){
     answersSoFar.save();
     return answersSoFar;
 }
+
+
 export async function AnswersByPollID(pollId:string){
     return await Danswer.findOne({pollId:pollId});
 }
