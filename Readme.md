@@ -1,4 +1,7 @@
 # Multi Poller
+
+[![Build Status](https://travis-ci.org/Ali-Meh/MultiPollerBot.svg?branch=master)](https://travis-ci.org/Ali-Meh/MultiPollerBot)
+
 > multi Polls in raw one after an other for telegram bot
 
 
@@ -13,7 +16,7 @@ Generates Multiple Polls and lets You share the poll and users to answer Them th
 ```sh
 npm install
 ```
-* edit the [Config](https://github.com/Ali-Meh/MultiPollerBot/blob/master/Config/Config.json) file
+* edit the **[.Config](https://github.com/Ali-Meh/MultiPollerBot/blob/master/Config/.Config.json)** and rename it to **Config** file
 
 * run the code Below
 ```sh
@@ -24,7 +27,7 @@ npm run wstart
 
 
 ## Usage example
-the bot demo is available on [Telegram](t.me/multyPollBot)
+the bot demo is available on [Telegram](https://t.me/multyPollBot)
 
 ## Development setup
 

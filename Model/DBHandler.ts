@@ -11,6 +11,9 @@ mongoose.connect(DbUrl,(err)=>{
         console.log("erroeer: "+JSON.stringify(err,undefined,4));
     else{
         console.log("connected To Database");
+        if(process.env.NODE_ENV==='test'){
+            process.exit(0);
+        }
         
     }
 });
