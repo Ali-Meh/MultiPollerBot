@@ -3,6 +3,43 @@ import I from '../../Util/modelInterfases'
 import expect from "expect";
 
 
+
+describe("-->ExtractAnswers<--",()=>{
+    it("should find answers",(done)=>{
+        dbUtil.ExtractAnswers("5b785d5d64f16d51dcfb6f4f",68819059).then((res)=>{
+            if(res){
+                expect(res[0].userIdHash).toBeTruthy();
+                // console.log(JSON.stringify(res,undefined,4));
+                done();
+                
+            }else{
+                throw new Error("Extraction Failed");
+            }
+        })
+    });
+    it("should throw error for not owner",(done)=>{
+        dbUtil.ExtractAnswers("5b785d5d64f16d51dcfb6f4f",68818059).then((res)=>{
+            if(res){
+                throw new Error();
+            }
+        }).catch((e)=>{
+            // console.log(JSON.stringify(e.message,undefined,4));
+            done();
+        })
+    });
+    it("should throw error for not founded poll",(done)=>{
+        dbUtil.ExtractAnswers("5b785d5d6468819059fb6f4f",68819059).then((res)=>{
+            if(res){
+                throw new Error();
+            }
+        }).catch((e)=>{
+            // console.log(JSON.stringify(e.message,undefined,4));
+            done();
+        })
+    })
+})
+
+
 describe("count the collection func",()=>{
     it("shold count the values in an object an return them back",()=>{
         let obj:I.IuserAnswer[]=[{questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},{questionID:"123",answerId:1},

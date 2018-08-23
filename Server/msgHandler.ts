@@ -26,7 +26,42 @@ export class botMsgHandler{
         })
 
         bot.onText(/\/extract (.+)/,(msg,match)=>{//todo
-            bot.sendMessage(msg.chat.id,lang.Error_NotImplmnt);
+            if(match){
+                let id;
+                let ids=match[1].split("-");
+                for(let i=0;i<ids.length;i++){
+                    var bool=false; 
+                    bool=/^[0-9a-fA-F]{24}$/.test(ids[i].trim())
+                    if(bool){
+                        id=ids[i].trim();
+                        break;
+                    }else{//fixme add message
+                        // bot.sendMessage(msg.chat.id,"not");
+                    }
+                }
+                bot.sendMessage(msg.chat.id,lang.notify_fileUpload)
+                if(id){
+                    //todo wire up with search and generating file
+                    dbUtil.ExtractAnswers(id,msg.chat.id).then((res)=>{
+                        if(res){
+                            bot.sendDocument(msg.chat.id,Buffer.from(uiUtil.GenerateCSVFile(res),"utf8"),{caption:"Your File is ready for download"},{  filename: 'Results.csv',contentType: 'text/csv' })
+                        }
+                        else{
+                            bot.sendMessage(msg.chat.id,lang.Error_NOAnswers_sofar);
+                        }
+                    }).catch((error)=>{
+                        bot.sendMessage(msg.chat.id,lang[error.message]);                        
+                    })
+
+                }else{//fixme add error
+                    bot.sendMessage(msg.chat.id,lang.Error_NoIdSpec);
+                }
+
+
+            }
+
+
+            // bot.sendMessage(msg.chat.id,lang.Error_NotImplmnt);
         })
 
         bot.onText(/\/start (.+)/,(msg ,match)=>{
@@ -86,7 +121,7 @@ export class botMsgHandler{
         bot.on("text",(msg:telegram.Message)=>{
             if(msg.text){
             let poller;
-                if(msg.text.indexOf("/myPolls")>-1){//fixme
+                if(msg.text.indexOf("/mypolls")>-1){//fixme
                     dbUtil.findPollsByOwner(msg.chat.id).then((polls)=>{
                     if(polls){
                         bot.sendMessage(msg.chat.id,lang.notify_myPollsKeyboardUpdate,uiUtil.MakeMarkUp(polls));
@@ -140,7 +175,7 @@ export class botMsgHandler{
                             // bot.sendMessage(msg.chat.id,lang.JSON.stringify(v,undefined,4));
                             return;
                         }
-                        bot.sendMessage(msg.chat.id,lang.notify_addedTodatabase,{reply_markup:{keyboard:[[{text:"/myPolls"}]],resize_keyboard:true}});//fixme no option yet runs the get answer track
+                        bot.sendMessage(msg.chat.id,lang.notify_addedTodatabase,{reply_markup:{keyboard:[[{text:"/mypolls"}]],resize_keyboard:true}});//fixme no option yet runs the get answer track
                         poller.addToDatabase();
                         return;
                     }else{

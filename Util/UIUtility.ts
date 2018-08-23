@@ -1,22 +1,15 @@
 import I from './modelInterfases'
 import telegram from 'node-telegram-bot-api';
+const Json2csvParser = require('json2csv').Parser;
 import langSelector from '../Util/lang/langSelector';
 const lang=langSelector();
 
 
-//if Qidx<1 no prev
-//if Qidx>=length-1 of Q's no next
-//a botuom to update corrent
-// export function MakeInLineMarkUpResultes(poll:I.infPoll,QIdx:number,/* answers */){//
-
-
-//     let Message:string;
-//     let Q=poll.questions[QIdx];
-//     Message="<b>"+Q.describer+"</b>\n\n\n\n";
-//     for(let i=0;i<Q.Answers.length;i++){
-//         Message+="<code>("+(i+1)+")</code> - "+Q.Answers[i]+"\n\n";
-//     }
-// }
+export function GenerateCSVFile(jsonFile:any[]){
+    let j2c=new Json2csvParser();
+    let csvFile=j2c.parse(jsonFile);    
+    return csvFile;
+}
 
 
 export function callbackUIMaker(bot:telegram,poll:I.infPoll,callbackData:I.CalbackData,userId:number,messageId:number,count?:{[key:string]:number}){
@@ -42,7 +35,7 @@ export function callbackUIMaker(bot:telegram,poll:I.infPoll,callbackData:I.Calba
 export function MakeMarkUp(arrayOFOptions:I.infPoll[],replyToMsgId?:number){
     let options:String[]=new Array();
     for(let i=0;i<arrayOFOptions.length;i++){
-        options.push("/extract "+(i+1).toString()+" - "+arrayOFOptions[i].describer+" -  with " + arrayOFOptions[i].questions.length+" questions");//fixme lang file add
+        options.push("/extract - "+arrayOFOptions[i].describer.slice(0,15)+"... -  with id -" + arrayOFOptions[i].id);//fixme lang file add
     }
     let opts:any = {
         reply_markup: JSON.stringify({

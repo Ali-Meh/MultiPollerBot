@@ -2,6 +2,7 @@ import '../Config/Config.ts';
 import mongoose from "mongoose";
 import {user,answer,Question,Poll} from "./Models";
 import I from "../Util/modelInterfases"
+import { findPollsById } from '../Util/DBUtil';
 
 
 let DbUrl=process.env.DBUrl;
@@ -10,11 +11,7 @@ mongoose.connect(DbUrl,(err)=>{
     if(err)
         console.log("erroeer: "+JSON.stringify(err,undefined,4));
     else{
-        console.log("connected To Database");
-        if(process.env.NODE_ENV==='test'){
-            process.exit(0);
-        }
-        
+        console.log("connected To Database");        
     }
 });
 
@@ -23,6 +20,22 @@ let Danswer=mongoose.model<I.InfAnswers>("Answers",answer);
 let Dquestion=mongoose.model<I.infQuestion>("Question",Question);
 let Duser=mongoose.model<I.InfUser>("user",user);
 
+
+export async function FindQById(pollId:string,Qid:string){
+    let poll=await findPollsById(pollId);
+    if(poll){
+        let Q:I.infQuestion|undefined;
+        for(let i=0;i<poll.questions.length;i++){
+            if(poll.questions[i].id===Qid){
+                Q=poll.questions[i];
+                break;
+            }
+        }
+        return Q;
+    }else{
+        return undefined;
+    }
+}
 
 export async function FindPollingUser(pollid:string,userHashId:string,setUserState?:boolean){
 

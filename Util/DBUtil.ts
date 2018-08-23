@@ -1,6 +1,43 @@
 import * as DBHandler from '../Model/DBHandler';
 import I from'./modelInterfases';
 import crypt from './cryptoUtil';
+import _ from 'lodash';
+
+
+
+
+
+export async function ExtractAnswers(PollId:string,ownerId:number){
+    let answers=await DBHandler.AnswersByPollID(PollId);
+    let poll=await DBHandler.findPollById(PollId);
+    if((poll&&poll.ownerId!==ownerId)||!poll){
+        throw new Error("Error_extraction_failed");
+    }
+    let resault=new Array();
+    let temp;
+    if(answers){
+        for(let j=0;j<answers.users.length;j++){
+            let T:{[key:string]:string}={}
+            temp=_.pick(answers.users[j],["userIdHash","answers"]);
+            //@ts-ignore
+            T["userIdHash"]=temp.userIdHash;
+            for(let i=0;i<temp.answers.length;i++){
+                let Q=await DBHandler.FindQById(PollId,temp.answers[i].questionID.toString());
+                if(Q){
+                    //@ts-ignore
+                    T[Q.describer.toString()]=temp.answers[i].answerId;
+                }else{
+                    throw new Error("error");//fixme 
+                }
+            }
+            resault.push(T);
+        }
+        return resault;
+    }else{//fixme no poll finded
+        return undefined;
+    }
+
+}
 
 
 

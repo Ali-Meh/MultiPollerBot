@@ -8,8 +8,24 @@ import expect from 'expect';
 
 
 
-/* describe("--> DBHandler Tests <--",()=>{
-    describe("adding answers",()=>{
+describe("--> DBHandler Tests <--",()=>{
+
+    describe("...Question Db...",()=>{
+        it("should find the question",(done)=>{
+            dbhandler.FindQById("5b785d5d64f16d51dcfb6f4f","5b785d5e64f16d51dcfb6f50").then((res)=>{
+                expect(res).toBeTruthy();
+                if(res){
+                    expect(res.id).toEqual("5b785d5e64f16d51dcfb6f50");
+                    expect(res.describer).toEqual("q1");
+                }
+                done();
+            });
+        })
+    })
+
+
+
+/*     describe("adding answers",()=>{
         let newPoll:I.IAnswers={
             pollId:"Poll Number 1",
             user:{userIdHash:"userHash1",answers:[{questionID:"Question1",answerId:1}]}
@@ -64,11 +80,11 @@ import expect from 'expect';
                 }
             })
         });
-    })
+    }) */
 
 
 
 
 
 
-}) */
+})

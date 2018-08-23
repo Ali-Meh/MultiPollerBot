@@ -7,9 +7,9 @@ let bot:telegram;
 //You wanna set web hooks We on it ;)
 if(process.env.APP_URL){
     console.log("setting web hooks");
-    
     // @ts-ignore
     const options:telegram.ConstructorOptions = {
+        // @ts-ignore
         webHook:{port:process.env.PORT}
     };
     let ApiKey=process.env.ApiKey;
